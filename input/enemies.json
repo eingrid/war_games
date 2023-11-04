@@ -1,0 +1,34 @@
+{
+    "forces":[
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 12,
+                "latitude": 18
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "tank",
+            "object_confidence": 0.8
+        },
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 5,
+                "latitude": 12
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "mlrs",
+            "object_confidence": 0.9
+        },
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 2,
+                "latitude": 8
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "stormtrooper",
+            "object_confidence": 0.8
+        }
+    ]
+}
