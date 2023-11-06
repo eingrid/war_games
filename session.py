@@ -54,7 +54,7 @@ class SimulationSession:
     
     def __make_moves(self, allies, enemies, disable):
         logs = []
-        for allies_unit in self.allies:
+        for allies_unit in allies:
             avaliable_actions = allies_unit.get_avaliable_actions(allies, enemies, self.map)
             generated_index = np.random.randint(0, len(avaliable_actions))
             # select move

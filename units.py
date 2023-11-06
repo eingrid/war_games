@@ -26,7 +26,7 @@ class MilitaryUnit:
         return self.longtitude, self.latitude
 
     def __get_euclidian_distance(self, unit):
-        return ((self.longtitude - unit.longtitude)**2+(self.longtitude - unit.longtitude)**2+(self.altitude - unit.altitude**2))**0.5
+        return ((self.longtitude - unit.longtitude)**2+(self.latitude - unit.latitude)**2+(self.altitude - unit.altitude**2))**0.5
     
     def _scan_range(self, enemies):
         return list(filter(lambda enemy: self.__get_euclidian_distance(enemy) <= self.attack_range, enemies))
@@ -50,7 +50,7 @@ class MilitaryUnit:
         self.longtitude -= 1
 
     def _move_east(self):
-        self.latitude += 1
+        self.longtitude += 1
 
     def _get_avaliable_moves(self, map):
         avaliable_moves = []
