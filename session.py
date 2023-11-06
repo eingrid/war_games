@@ -84,6 +84,7 @@ class SimulationSession:
                 log = Attack(allies_unit, selected_target, is_target_destroyed)
                 log.phase_number = self.step
                 if is_target_destroyed:
+                    self.map.clear_unit(selected_target.latitude, selected_target.longtitude)
                     self.__getattribute__(f"dead_{disable}").append(selected_target)
             #Ignore for now
             # elif action[0] == 'follow_vehicle':
@@ -125,26 +126,31 @@ class SimulationSession:
         """
         outcome = True
         
+        self.plot_action_map()
         while outcome not in {'Victory', 'Defeat'}:
-            self.plot_action_map()
             self.step += 1
             outcome = self.__run_phase()
         self._save_logs_to_json()
         print(self.step)
-        plt.show()
+        self.plot_action_map()
+        # plt.show()
         return self.logs
     
     def _save_logs_to_json(self):
         pass
 
     def plot_action_map(self):
-        cMap = c.ListedColormap(['w','b', 'r'])
-        plt.pcolormesh(self.map.action_map, edgecolors='k', linewidth=2,cmap=cMap)
+        colors = ['w', 'b', 'r']
+        bounds = [0, 1, 2, 3]
+        cMap = c.ListedColormap(colors)
+        norm = c.BoundaryNorm(bounds, cMap.N, clip=True)
+        plt.pcolormesh(self.map.action_map, edgecolors='k', linewidth=2,cmap=cMap, norm=norm)
+        print(self.map.action_map)
         ax = plt.gca()
         ax.set_aspect('equal')
-        # plt.show()
+        plt.show()
 
 if __name__ == '__main__':
-    ss = SimulationSession(Map(frontline_longtitude=15, terrain=np.ones(shape=(20,20))), allies=ALLIES, enemies=ENEMIES, )
+    ss = SimulationSession(Map(frontline_longtitude=18, terrain=np.ones(shape=(20,20))), allies=ALLIES, enemies=ENEMIES, )
     simulation_result = ss.run()
     print(simulation_result)
