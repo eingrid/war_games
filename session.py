@@ -5,12 +5,12 @@ import json
 import random
 
 import numpy as np
+import os
 
-FOLDER_PATH = 'intro to ds/war_games/'
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-ALLIES = json.load(open(FOLDER_PATH + 'input/allies.json', 'r')).get('forces')
-ENEMIES = json.load(open(FOLDER_PATH + 'input/enemies.json', 'r')).get('forces')
-
+ALLIES = json.load(open(ROOT_DIR + '/input/allies.json', 'r')).get('forces')
+ENEMIES = json.load(open(ROOT_DIR + '/input/enemies.json', 'r')).get('forces')
 
 class SimulationSession:
     def __init__(self, map: Map, allies: dict, enemies: dict, min_confidence_threshold=0.5) -> None:
