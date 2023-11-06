@@ -1,5 +1,5 @@
 import numpy as np
-
+from map import Map
 
 class MilitaryUnit:
     def __init__(self, name: str, longtitude: int, latitude: int, altitude: int, attack_range: int) -> None:
@@ -35,7 +35,9 @@ class MilitaryUnit:
         return list(DESTROYING_PROBABILITY[self.__class__].keys())
 
     def _fire(self, enemy_unit, field_coeff=1.0):
-        if np.random.rand() < DESTROYING_PROBABILITY[self.__class__][enemy_unit.__class__]*field_coeff:
+        rand = np.random.rand()
+        if rand < DESTROYING_PROBABILITY[self.__class__][enemy_unit.__class__]*field_coeff:
+            print(rand)
             enemy_unit.destroyed = True
             return True
         return False
@@ -52,15 +54,16 @@ class MilitaryUnit:
     def _move_east(self):
         self.longtitude += 1
 
-    def _get_avaliable_moves(self, map):
+    def _get_available_moves(self, map: Map):
         avaliable_moves = []
-        if  self.longtitude != 0:
-            avaliable_moves.append(('move_west',))
-        if self.longtitude != map.max_longtitude:
+        # I think we should remove this possibility
+        # if  self.longtitude != 0:
+        #     avaliable_moves.append(('move_west',))
+        if (self.longtitude < (map.frontline_longtitude - 1)) and map.is_point_available(self.latitude,self.longtitude + 1):
             avaliable_moves.append(('move_east',))
-        if self.latitude != 0:
+        if (self.latitude < (map.max_latitude - 1)) and  map.is_point_available(self.latitude+1,self.longtitude):
             avaliable_moves.append(('move_north',))
-        if self.latitude != map.max_latitude:
+        if (self.latitude > 0) and  map.is_point_available(self.latitude-1,self.longtitude):
             avaliable_moves.append(('move_south',))
         return avaliable_moves
     
@@ -88,14 +91,15 @@ class ArmoredTransport(GroundForce):
         self.troops_slot = None
         super().__init__(name, longtitude, latitude, altitude, attack_range)
 
-    def get_avaliable_actions(self, allies, enemies, map):
+    def get_avaliable_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
         #attack
         reachable_priority_targets = self._get_reachable_priority_targets(enemies)
         if len(reachable_priority_targets) > 0:
             avaliable_moves.append(('attack', reachable_priority_targets))
         #moves
-        avaliable_moves.extend(self._get_avaliable_moves(map))
+        elif (can_move):
+            avaliable_moves.extend(self._get_available_moves(map))
         return avaliable_moves
     
     def move(self, func):
@@ -120,7 +124,7 @@ class Tank(ArmoredTransport):
                          longtitude, 
                          latitude,
                          altitude, 
-                         attack_range=1500)
+                         attack_range=5)
 
 
 class Troops(GroundForce):
@@ -140,25 +144,27 @@ class Troops(GroundForce):
     def _is_covered_by_vehicle(self):
         return self.covered_by_vehicle is None
     
-    def get_avaliable_actions(self, allies, enemies, map):
+    def get_avaliable_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
         #attack
         reachable_priority_targets = self._get_reachable_priority_targets(enemies)
         if len(reachable_priority_targets) > 0:
             avaliable_moves.append(('attack', reachable_priority_targets))
+        elif (can_move):
+            avaliable_moves.extend(self._get_available_moves(map))
         #intereaction with armored vehicle
-        if self.covered_by_vehicle:
-            avaliable_moves.append(('leave_vehicle', self.covered_by_vehicle))
-        elif not self.covered_by_vehicle:
-            vehicles_in_same_field = list(filter(lambda unit: isinstance(unit, ArmoredTransport) and 
-                                                            not unit.troops_slot and 
-                                                            not unit.destroyed and 
-                                                            self._get_location() == unit._get_location(), 
-                                                            allies))
-            if len(vehicles_in_same_field) > 0:
-                avaliable_moves.append(('follow_vehicle', vehicles_in_same_field))
-            #move
-            avaliable_moves.extend(self._get_avaliable_moves(map))
+        # if self.covered_by_vehicle:
+        #     avaliable_moves.append(('leave_vehicle', self.covered_by_vehicle))
+        # elif not self.covered_by_vehicle:
+        #     vehicles_in_same_field = list(filter(lambda unit: isinstance(unit, ArmoredTransport) and 
+        #                                                     not unit.troops_slot and 
+        #                                                     not unit.destroyed and 
+        #                                                     self._get_location() == unit._get_location(), 
+        #                                                     allies))
+        #     if len(vehicles_in_same_field) > 0:
+        #         avaliable_moves.append(('follow_vehicle', vehicles_in_same_field))
+        #     #move
+        #     avaliable_moves.extend(self._get_avaliable_moves(map))
         return avaliable_moves
     
 
@@ -188,7 +194,7 @@ class Artillery(GroundForce):
                          altitude,
                          attack_range=2000)    
         
-    def get_avaliable_actions(self, allies, enemies, map):
+    def get_available_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
         #attack
         reachable_priority_targets = self._get_reachable_priority_targets(enemies)
@@ -220,7 +226,7 @@ class AirForce(MilitaryUnit):
         if len(reachable_priority_targets) > 0:
             avaliable_actions.append(('attack', reachable_priority_targets))
         #moves
-        avaliable_actions.extend(self._get_avaliable_moves(map))
+        # avaliable_actions.extend(self._get_avaliable_moves(map))
         #increase/decrease altitude
         if self.altitude + self.delta_altitude < self.max_altitude:
             avaliable_actions.append('move_up',)
