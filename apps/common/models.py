@@ -76,7 +76,7 @@ class MilitaryUnit:
         self.longtitude -= 1
 
     def _move_east(self):
-        self.latitude += 1
+        self.longtitude += 1
 
 
 class AirForce(MilitaryUnit):

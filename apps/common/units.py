@@ -38,7 +38,7 @@ class MilitaryUnit:
     def __get_euclidian_distance(self, unit):
         return (
             (self.longtitude - unit.longtitude) ** 2
-            + (self.longtitude - unit.longtitude) ** 2
+            + (self.latitude - unit.latitude) ** 2
             + (self.altitude - unit.altitude**2)
         ) ** 0.5
 

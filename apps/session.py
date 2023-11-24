@@ -70,7 +70,7 @@ class SimulationSession:
 
     def __make_moves(self, allies, enemies, disable):
         logs = []
-        for allies_unit in self.allies:
+        for allies_unit in allies:
 
             action = self.simulation.select_move(allies_unit,allies,enemies,self.map)
             
