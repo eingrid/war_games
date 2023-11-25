@@ -2,8 +2,7 @@ import json
 import random
 
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib import colors as c
+from utils import get_absolute_path
 from logger import Attack, Move
 
 from common.map import Map
@@ -11,8 +10,8 @@ from common.units import OBJECT_TO_CLASS_MAPPER
 from montecarlo_simulation.montecarlo import MonteCarlo
 from uniform_simulation.uniform import Uniform
 
-ALLIES = json.load(open("input/allies.json", "r")).get("forces")
-ENEMIES = json.load(open("input/enemies.json", "r")).get("forces")
+ALLIES = json.load(open(get_absolute_path("/input/allies.json"), "r")).get("forces")
+ENEMIES = json.load(open(get_absolute_path("/input/enemies.json"), "r")).get("forces")
 
 class SimulationSession:
     def __init__(
@@ -143,30 +142,16 @@ class SimulationSession:
         """Start simulation process as a loop of phases"""
         outcome = True
         
-        self.plot_action_map()
         while outcome not in {'Victory', 'Defeat'}:
             self.step += 1
             outcome = self.run_phase()
         self._save_logs_to_json()
         print(self.step)
-        self.plot_action_map()
-        # plt.show()
         return self.logs
         
 
     def _save_logs_to_json(self):
         pass
-
-    def plot_action_map(self):
-        colors = ['w', 'b', 'r']
-        bounds = [0, 1, 2, 3]
-        cMap = c.ListedColormap(colors)
-        norm = c.BoundaryNorm(bounds, cMap.N, clip=True)
-        plt.pcolormesh(self.map.action_map, edgecolors='k', linewidth=2,cmap=cMap, norm=norm)
-        print(self.map.action_map)
-        ax = plt.gca()
-        ax.set_aspect('equal')
-        plt.show()
 
 if __name__ == '__main__':
     ss = SimulationSession(Map(frontline_longtitude=18, terrain=np.ones(shape=(20,20))), allies=ALLIES, enemies=ENEMIES, simulation= Uniform() )

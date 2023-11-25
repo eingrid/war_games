@@ -1,4 +1,5 @@
 import pygame
+from utils import get_absolute_path
 from session import SimulationSession
 from common.map import Map 
 from enums import Cell, TroopImage
@@ -18,7 +19,7 @@ class Visualization:
 
     def redraw(self,map : Map,allies,enemies):
         terrain = map.terrain
-        img = pygame.image.load("textures/EMPTY_TEX.png")
+        img = pygame.image.load(get_absolute_path("/textures/EMPTY_TEX.png"))
         self.screen.blit(img, (100, 100)) 
         for x in range(terrain.shape[0]):
             for y in range(terrain.shape[1]):
@@ -34,29 +35,36 @@ class Visualization:
             for troop in TroopImage:
                 
                 if troop.value["name"] in ally.name:
-                    self.screen.blit(troop.value['image'], (ally.latitude * CELL_SIZE, ally.longtitude * CELL_SIZE))
+                    self.screen.blit(troop.value['image'], (ally.longtitude * CELL_SIZE, ally.latitude * CELL_SIZE))
 
         for enemy in enemies:
             for troop in TroopImage:
                 if troop.value["name"] in enemy.name:
-                    self.screen.blit(pygame.transform.flip(troop.value['image'], True, False), (enemy.latitude * CELL_SIZE, enemy.longtitude * CELL_SIZE))
+                    self.screen.blit(pygame.transform.flip(troop.value['image'], True, False), (enemy.longtitude * CELL_SIZE, enemy.latitude * CELL_SIZE))
 
         pygame.display.flip()
 
     def run_simulation(self):
         outcome = True
         
-        while outcome not in {"Victory", "Defeat"}:
-            self.ss.step += 1
-            outcome = self.ss.run_phase()
-            current_map = self.ss.map
-            alive_allies,alive_enemies = self.ss._get_alive_units()
-            self.redraw(current_map,alive_allies,alive_enemies)
+        
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
-            # Add a delay of 1 for visualization
-            pygame.time.wait(1000)
-            
-        self.ss._save_logs_to_json()
+            while outcome not in {"Victory", "Defeat"}:
+                self.ss.step += 1
+                outcome = self.ss.run_phase()
+                current_map = self.ss.map
+                alive_allies,alive_enemies = self.ss._get_alive_units()
+                self.redraw(current_map,alive_allies,alive_enemies)
+
+                # Add a delay of 1 for visualization
+                pygame.time.wait(1000)
+                
+            self.ss._save_logs_to_json()
 
         pygame.quit()
 
