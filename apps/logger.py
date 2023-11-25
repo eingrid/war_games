@@ -1,4 +1,4 @@
-from units import MilitaryUnit
+from common.units import MilitaryUnit
 
 
 class Action:
@@ -18,12 +18,14 @@ class Move(Action):
 
     def get_destination_location(self):
         return self.destination
-    
+
     location = property(get_destination_location, set_destination_location)
 
 
 class Attack(Action):
-    def __init__(self, unit: MilitaryUnit, target: MilitaryUnit, target_destroyed: bool) -> None:
+    def __init__(
+        self, unit: MilitaryUnit, target: MilitaryUnit, target_destroyed: bool
+    ) -> None:
         self.destroyed = target_destroyed
         self.target = target
         super().__init__(unit)

@@ -1,6 +1,6 @@
-import pygame
 import noise
 import numpy as np
+import pygame
 
 # Define grid dimensions
 GRID_WIDTH = 40
@@ -17,7 +17,7 @@ WINDOW_WIDTH = GRID_WIDTH * CELL_SIZE + menu_width
 WINDOW_HEIGHT = GRID_HEIGHT * CELL_SIZE
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
-#font
+# font
 font = pygame.font.Font(None, 36)
 
 # Generate Perlin noise
@@ -63,9 +63,14 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Left mouse button
                 # Check if the click is within the troop selection menu
-                if 0 <= event.pos[1] < WINDOW_HEIGHT and WINDOW_WIDTH-menu_width < event.pos[0] < WINDOW_WIDTH :
+                if (
+                    0 <= event.pos[1] < WINDOW_HEIGHT
+                    and WINDOW_WIDTH - menu_width < event.pos[0] < WINDOW_WIDTH
+                ):
                     # Determine the selected troop based on the click position
-                    selected_troop = list(menu_items.keys())[event.pos[1] // menu_item_height]
+                    selected_troop = list(menu_items.keys())[
+                        event.pos[1] // menu_item_height
+                    ]
                     print(selected_troop)
                 # If not in the menu, handle troop placement
                 else:
@@ -77,16 +82,32 @@ while running:
                         if 0 <= x < GRID_WIDTH and 0 <= y < GRID_HEIGHT:
                             troop_positions[(x, y)] = selected_troop
 
-
     ## Draw selection menu
-    pygame.draw.rect(screen, (255,0,0), (WINDOW_WIDTH-menu_width, 0, menu_width, WINDOW_HEIGHT))
-    for i,(k,v) in enumerate(menu_items.items()):
+    pygame.draw.rect(
+        screen, (255, 0, 0), (WINDOW_WIDTH - menu_width, 0, menu_width, WINDOW_HEIGHT)
+    )
+    for i, (k, v) in enumerate(menu_items.items()):
         text_surface = font.render(k, True, (0, 0, 0))
         if k == selected_troop:
             pass
-        pygame.draw.rect(screen, (0,0,0), (WINDOW_WIDTH-menu_width, i*WINDOW_HEIGHT//len(menu_items), menu_width, (i+1)*WINDOW_HEIGHT//len(menu_items)),10)
-        screen.blit(text_surface, (WINDOW_WIDTH-menu_width+10, 10+(i)*WINDOW_HEIGHT//len(menu_items)))
-
+        pygame.draw.rect(
+            screen,
+            (0, 0, 0),
+            (
+                WINDOW_WIDTH - menu_width,
+                i * WINDOW_HEIGHT // len(menu_items),
+                menu_width,
+                (i + 1) * WINDOW_HEIGHT // len(menu_items),
+            ),
+            10,
+        )
+        screen.blit(
+            text_surface,
+            (
+                WINDOW_WIDTH - menu_width + 10,
+                10 + (i) * WINDOW_HEIGHT // len(menu_items),
+            ),
+        )
 
     # Draw the grid and insert images based on noise values
     for x in range(GRID_WIDTH):
@@ -97,8 +118,7 @@ while running:
                 if min_val <= noise_grid[x][y] < max_val:
                     screen.blit(image, (x * CELL_SIZE, y * CELL_SIZE))
                     break
-                
-                
+
             else:
                 # Use the fallback image for unmapped noise values
                 screen.blit(fallback_image, (x * CELL_SIZE, y * CELL_SIZE))
@@ -106,9 +126,6 @@ while running:
     # Draw troops on the grid
     for (x, y), troop_type in troop_positions.items():
         screen.blit(menu_items[troop_type], (x * CELL_SIZE, y * CELL_SIZE))
-
-
-
 
     pygame.display.flip()
 
