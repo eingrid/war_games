@@ -9,13 +9,17 @@ class MilitaryUnit:
         latitude: int,
         altitude: int,
         attack_range: int,
+        passability: float
     ) -> None:
+        if(passability < 0 or passability > 1):
+            raise ValueError('passabiity should be between 0 and 1')
         self.name = name
         self.longtitude = longtitude
         self.latitude = latitude
         self.altitude = altitude
         self.attack_range = attack_range
         self.destroyed = False
+        self.passability = passability
 
     def __set_name__(self, owner, name):
         self.name = "_" + name
@@ -76,15 +80,15 @@ class MilitaryUnit:
 
     def _get_available_moves(self, map: Map):
         avaliable_moves = []
-        # TODO: For discussion: I think we should remove this possibility
-        # if  self.longtitude != 0:
-        #     avaliable_moves.append(('move_west',))
-        if (self.longtitude < (map.frontline_longtitude - 1)) and map.is_point_available(self.latitude,self.longtitude + 1):
+        if (self.longtitude < (map.frontline_longtitude - 1)) and map.can_move_to_point(self.latitude,self.longtitude + 1,self.passability):
             avaliable_moves.append(('move_east',))
-        if (self.latitude < (map.max_latitude - 1)) and  map.is_point_available(self.latitude+1,self.longtitude):
+        if (self.latitude < (map.max_latitude - 1)) and  map.can_move_to_point(self.latitude+1,self.longtitude,self.passability):
             avaliable_moves.append(('move_north',))
-        if (self.latitude > 0) and  map.is_point_available(self.latitude-1,self.longtitude):
+        if (self.latitude > 0) and  map.can_move_to_point(self.latitude-1,self.longtitude,self.passability):
             avaliable_moves.append(('move_south',))
+        # Allow to move back if there is no other option
+        if(len(avaliable_moves) == 0 and (self.longtitude != 0)):
+            avaliable_moves.append(('move_west',))
         return avaliable_moves
 
     def _get_reachable_priority_targets(self, enemies):  # how to select target
@@ -112,9 +116,10 @@ class GroundForce(MilitaryUnit):
         latitude: int,
         altitude: int,
         attack_range: int,
+        passability: float
     ) -> None:
         # self.permeability = 1.0
-        super().__init__(name, longtitude, latitude, altitude, attack_range)
+        super().__init__(name, longtitude, latitude, altitude, attack_range,passability)
 
 
 class ArmoredTransport(GroundForce):
@@ -125,9 +130,10 @@ class ArmoredTransport(GroundForce):
         latitude: int,
         altitude: int,
         attack_range: int,
+        passability: float
     ) -> None:
         self.troops_slot = None
-        super().__init__(name, longtitude, latitude, altitude, attack_range)
+        super().__init__(name, longtitude, latitude, altitude, attack_range,passability)
 
     def get_avaliable_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
@@ -148,17 +154,18 @@ class ArmoredTransport(GroundForce):
 
 
 class ArmoredPersonnelCarriers(ArmoredTransport):
-    def __init__(self, name: str, longtitude: int, latitude: int, altitude=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=1000)
+    def __init__(self, name: str, longtitude: int, latitude: int, passability, altitude=0) -> None:
+        super().__init__(name, longtitude, latitude, altitude, attack_range=1000, passability=passability)
 
 
 class Tank(ArmoredTransport):
-    def __init__(self, name: str, longtitude: int, latitude: int, altitude=0) -> None:
+    def __init__(self, name: str, longtitude: int, latitude: int, altitude=0,passability=0) -> None:
         super().__init__(name, 
                          longtitude, 
                          latitude,
                          altitude, 
-                         attack_range=5)
+                         attack_range=5,
+                         passability=passability)
 
 
 class Troops(GroundForce):
@@ -169,9 +176,10 @@ class Troops(GroundForce):
         latitude: int,
         altitude: int,
         attack_range: int,
+        passability: float,
     ) -> None:
         self.covered_by_vehicle = None
-        super().__init__(name, longtitude, latitude, altitude, attack_range)
+        super().__init__(name, longtitude, latitude, altitude, attack_range,passability)
 
     def _follow_vehicle(self, unit):
         unit.troops_slot = self
@@ -210,22 +218,23 @@ class Troops(GroundForce):
 
 
 class Stormtrooper(Troops):
-    def __init__(self, name, longtitude, latitude, altitude=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=300)
+    def __init__(self, name, longtitude, latitude, altitude=0,passability=0) -> None:
+        super().__init__(name, longtitude, latitude, altitude, attack_range=300,passability=passability)
 
 
 class MLRS(Troops):
-    def __init__(self, name, longtitude, latitude, altitude=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=500)
+    def __init__(self, name, longtitude, latitude, altitude=0,passability=0.5) -> None:
+        super().__init__(name, longtitude, latitude, altitude, attack_range=500,passability=passability)
 
 
 class Artillery(GroundForce):
-    def __init__(self, name, longtitude, latitude, altitude=0) -> None:
+    def __init__(self, name, longtitude, latitude, altitude=0,passability=0.5) -> None:
         super().__init__(name, 
                          longtitude, 
                          latitude, 
                          altitude,
-                         attack_range=2000)    
+                         attack_range=2000,
+                         passability=passability)    
         
     def get_available_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
@@ -254,7 +263,7 @@ class AirForce(MilitaryUnit):
         self.timeout = 0
         self.going_home = False
         self.steps_to_airport = 0
-        super().__init__(name, longtitude, latitude, altitude, attack_range)
+        super().__init__(name, longtitude, latitude, altitude, attack_range,passability=1)
 
     def _move_up(self):
         self.altitude += self.delta_altitude

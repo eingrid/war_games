@@ -61,8 +61,8 @@ class Visualization:
                 alive_allies,alive_enemies = self.ss._get_alive_units()
                 self.redraw(current_map,alive_allies,alive_enemies)
 
-                # Add a delay of 1 for visualization
-                pygame.time.wait(1000)
+                # Add a delay of 0.5s for visualization
+                pygame.time.wait(500)
                 
             self.ss._save_logs_to_json()
 

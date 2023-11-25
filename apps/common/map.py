@@ -36,7 +36,7 @@ class Map:
 
         for x in range(self.max_longtitude):
             for y in range(self.max_latitude):
-                noise_value = noise.snoise2(x / 10, y / 10, octaves=6)
+                noise_value = noise.snoise2(x / 10, y / 20, octaves=6)
                 terrain[x, y] = self._map_noise_to_cell(noise_value)
 
         return terrain
@@ -53,8 +53,11 @@ class Map:
     def update_action_map(self,latitude, longitutte, value):
         if (self._is_in_range(latitude,longitutte)):
             self.action_map[latitude][longitutte] = value
+    
+    def can_move_to_point(self,latitude, longitutte, passability):
+        return self._is_point_available(latitude,longitutte) and (self.terrain[longitutte][latitude] <= passability)
 
-    def is_point_available(self,latitude, longitutte):
+    def _is_point_available(self,latitude, longitutte):
         return self.action_map[latitude][longitutte] == 0
     
     def clear_unit(self,latitude, longitutte):
