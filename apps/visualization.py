@@ -1,4 +1,5 @@
 import pygame
+import pygame.freetype
 from utils import get_absolute_path
 from session import SimulationSession
 from common.map import Map 
@@ -9,6 +10,7 @@ CELL_SIZE = 18
 class Visualization:
     def __init__(self, width, height,session : SimulationSession):
         pygame.init()
+        self.GAME_FONT = pygame.freetype.Font(None, 40)
         self.ss = session
         self.width = width
         self.height = height
@@ -44,15 +46,18 @@ class Visualization:
 
         pygame.display.flip()
 
+    def _dispay_outcome(self, outcome):
+        txtsurf, rect = self.GAME_FONT.render(outcome)
+        self.screen.blit(txtsurf, (self.width/2 - rect.width // 2, self.height/2 - rect.height // 2))
+        pygame.display.flip()
+
     def run_simulation(self):
         outcome = True
         
-        
-        running = True
-        while running:
+        while self.is_running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    self.is_running = False
 
             while outcome not in {"Victory", "Defeat"}:
                 self.ss.step += 1
@@ -61,9 +66,11 @@ class Visualization:
                 alive_allies,alive_enemies = self.ss._get_alive_units()
                 self.redraw(current_map,alive_allies,alive_enemies)
 
+                pygame.display.flip()
                 # Add a delay of 0.5s for visualization
                 pygame.time.wait(500)
-                
+            
+            self._dispay_outcome(outcome)
             self.ss._save_logs_to_json()
 
         pygame.quit()
