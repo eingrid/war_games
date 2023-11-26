@@ -77,17 +77,26 @@ class SimulationSession:
 
     def __make_moves(self, allies, enemies, disable,can_move):
         logs = []
+        allies.sort(key=lambda x: x.longtitude, reverse=True)
+        leader_move=None
         for allies_unit in allies:
             avaliable_actions = allies_unit.get_avaliable_actions(allies, enemies, self.map, can_move)
             if(len(avaliable_actions) == 0):
                 continue
-            generated_index = np.random.randint(0, len(avaliable_actions))
+            
             # select move
-            action = avaliable_actions[generated_index]
+            # TODO: waiting for feedback regarding unit moves unification
+            if leader_move in avaliable_actions:
+                action = leader_move
+            else:
+                generated_index = np.random.randint(0, len(avaliable_actions))
+                action = avaliable_actions[generated_index]
+
             if "move" in action[0]:
                 log = Move(allies_unit)
                 self.map.clear_unit(allies_unit.latitude,allies_unit.longtitude)
                 allies_unit.move(action[0])
+                leader_move=action
                 self.map.update_action_map(allies_unit.latitude, allies_unit.longtitude, 1)
                 log.location = allies_unit._get_location()
                 log.phase_number = self.step
