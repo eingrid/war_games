@@ -24,8 +24,7 @@ class Move(Action):
     
     def _to_dict(self):
         return {
-            'unit': self.unit.__dict__,
-            'phase_number': self.phase_number,
+            'unit': self.unit.name,
             'start': self.start,
             'destination': self._destination,
         }
@@ -43,8 +42,7 @@ class Attack(Action):
 
     def _to_dict(self):
         return {
-            'unit': self.unit.__dict__,
-            'phase_number': self.phase_number,
+            'unit': self.unit.name,
             'destroyed': self.destroyed, 
-            'target': self.target.__dict__
+            'target': self.target.name
             }
