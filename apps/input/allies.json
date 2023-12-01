@@ -3,8 +3,8 @@
         {
             "timestamp": 0,
             "location": {
-                "longtitude": 12,
-                "latitude": 18
+                "longtitude": 4,
+                "latitude": 10
             },
             "located_by": "drone1697i2bg335",
             "object_name": "tank",
@@ -13,11 +13,11 @@
         {
             "timestamp": 0,
             "location": {
-                "longtitude": 2,
+                "longtitude": 5,
                 "latitude": 8
             },
             "located_by": "drone1697i2bg335",
-            "object_name": "stormtrooper",
+            "object_name": "tank",
             "object_confidence": 0.8
         }
     ]
