@@ -1,5 +1,5 @@
 import numpy as np
-
+from common.map import Map
 
 class MilitaryUnit:
     def __init__(
@@ -9,13 +9,17 @@ class MilitaryUnit:
         latitude: int,
         altitude: int,
         attack_range: int,
+        passability: float
     ) -> None:
+        if(passability < 0 or passability > 1):
+            raise ValueError('passabiity should be between 0 and 1')
         self.name = name
         self.longtitude = longtitude
         self.latitude = latitude
         self.altitude = altitude
         self.attack_range = attack_range
         self.destroyed = False
+        self.passability = passability
 
     def __set_name__(self, owner, name):
         self.name = "_" + name
@@ -72,18 +76,19 @@ class MilitaryUnit:
         self.longtitude -= 1
 
     def _move_east(self):
-        self.latitude += 1
+        self.longtitude += 1
 
-    def _get_avaliable_moves(self, map):
+    def _get_available_moves(self, map: Map):
         avaliable_moves = []
-        if self.longtitude != 0:
-            avaliable_moves.append(("move_west",))
-        if self.longtitude != map.max_longtitude:
-            avaliable_moves.append(("move_east",))
-        if self.latitude != 0:
-            avaliable_moves.append(("move_north",))
-        if self.latitude != map.max_latitude:
-            avaliable_moves.append(("move_south",))
+        if (self.longtitude < (map.frontline_longtitude - 1)) and map.can_move_to_point(self.latitude,self.longtitude + 1,self.passability):
+            avaliable_moves.append(('move_east',))
+        if (self.latitude < (map.max_latitude - 1)) and  map.can_move_to_point(self.latitude+1,self.longtitude,self.passability):
+            avaliable_moves.append(('move_north',))
+        if (self.latitude > 0) and  map.can_move_to_point(self.latitude-1,self.longtitude,self.passability):
+            avaliable_moves.append(('move_south',))
+        # Allow to move back if there is no other option
+        if(len(avaliable_moves) == 0 and (self.longtitude != 0)):
+            avaliable_moves.append(('move_west',))
         return avaliable_moves
 
     def _get_reachable_priority_targets(self, enemies):  # how to select target
@@ -111,9 +116,10 @@ class GroundForce(MilitaryUnit):
         latitude: int,
         altitude: int,
         attack_range: int,
+        passability: float
     ) -> None:
         # self.permeability = 1.0
-        super().__init__(name, longtitude, latitude, altitude, attack_range)
+        super().__init__(name, longtitude, latitude, altitude, attack_range,passability)
 
 
 class ArmoredTransport(GroundForce):
@@ -123,19 +129,20 @@ class ArmoredTransport(GroundForce):
         longtitude: int,
         latitude: int,
         altitude: int,
-        attack_range: int,
+        attack_range: int
     ) -> None:
         self.troops_slot = None
-        super().__init__(name, longtitude, latitude, altitude, attack_range)
+        super().__init__(name, longtitude, latitude, altitude, attack_range,UNIT_PASSABILITY["armored_transport"])
 
-    def get_avaliable_actions(self, allies, enemies, map):
+    def get_avaliable_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
         # attack
         reachable_priority_targets = self._get_reachable_priority_targets(enemies)
         if len(reachable_priority_targets) > 0:
-            avaliable_moves.append(("attack", reachable_priority_targets))
-        # moves
-        avaliable_moves.extend(self._get_avaliable_moves(map))
+            avaliable_moves.append(('attack', reachable_priority_targets))
+        #moves
+        elif (can_move):
+            avaliable_moves.extend(self._get_available_moves(map))
         return avaliable_moves
 
     def move(self, func):
@@ -152,7 +159,11 @@ class ArmoredPersonnelCarriers(ArmoredTransport):
 
 class Tank(ArmoredTransport):
     def __init__(self, name: str, longtitude: int, latitude: int, altitude=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=1500)
+        super().__init__(name, 
+                         longtitude, 
+                         latitude,
+                         altitude, 
+                         attack_range=5)
 
 
 class Troops(GroundForce):
@@ -165,7 +176,7 @@ class Troops(GroundForce):
         attack_range: int,
     ) -> None:
         self.covered_by_vehicle = None
-        super().__init__(name, longtitude, latitude, altitude, attack_range)
+        super().__init__(name, longtitude, latitude, altitude, attack_range,UNIT_PASSABILITY["troops"])
 
     def _follow_vehicle(self, unit):
         unit.troops_slot = self
@@ -178,29 +189,27 @@ class Troops(GroundForce):
 
     def _is_covered_by_vehicle(self):
         return self.covered_by_vehicle is None
-
-    def get_avaliable_actions(self, allies, enemies, map):
+    
+    def get_avaliable_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
         # attack
         reachable_priority_targets = self._get_reachable_priority_targets(enemies)
         if len(reachable_priority_targets) > 0:
-            avaliable_moves.append(("attack", reachable_priority_targets))
-        # intereaction with armored vehicle
+            avaliable_moves.append(('attack', reachable_priority_targets))
+        elif (can_move):
+            avaliable_moves.extend(self._get_available_moves(map))
+        #intereaction with armored vehicle
         if self.covered_by_vehicle:
-            avaliable_moves.append(("leave_vehicle", self.covered_by_vehicle))
+            avaliable_moves.append(('leave_vehicle', self.covered_by_vehicle))
         elif not self.covered_by_vehicle:
-            vehicles_in_same_field = list(
-                filter(
-                    lambda unit: isinstance(unit, ArmoredTransport)
-                    and not unit.troops_slot
-                    and not unit.destroyed
-                    and self._get_location() == unit._get_location(),
-                    allies,
-                )
-            )
+            vehicles_in_same_field = list(filter(lambda unit: isinstance(unit, ArmoredTransport) and 
+                                                            not unit.troops_slot and 
+                                                            not unit.destroyed and 
+                                                            self._get_location() == unit._get_location(), 
+                                                            allies))
             if len(vehicles_in_same_field) > 0:
-                avaliable_moves.append(("follow_vehicle", vehicles_in_same_field))
-            # move
+                avaliable_moves.append(('follow_vehicle', vehicles_in_same_field))
+            #move
             avaliable_moves.extend(self._get_avaliable_moves(map))
         return avaliable_moves
 
@@ -211,15 +220,20 @@ class Stormtrooper(Troops):
 
 
 class MLRS(Troops):
-    def __init__(self, name, longtitude, latitude, altitude=0) -> None:
+    def __init__(self, name, longtitude, latitude, altitude=0,passability=0.5) -> None:
         super().__init__(name, longtitude, latitude, altitude, attack_range=500)
 
 
 class Artillery(GroundForce):
     def __init__(self, name, longtitude, latitude, altitude=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=2000)
-
-    def get_avaliable_actions(self, allies, enemies, map):
+        super().__init__(name, 
+                         longtitude, 
+                         latitude, 
+                         altitude,
+                         attack_range=2000,
+                         passability=0.5)    
+        
+    def get_available_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
         # attack
         reachable_priority_targets = self._get_reachable_priority_targets(enemies)
@@ -246,7 +260,7 @@ class AirForce(MilitaryUnit):
         self.timeout = 0
         self.going_home = False
         self.steps_to_airport = 0
-        super().__init__(name, longtitude, latitude, altitude, attack_range)
+        super().__init__(name, longtitude, latitude, altitude, attack_range,UNIT_PASSABILITY["air_force"])
 
     def _move_up(self):
         self.altitude += self.delta_altitude
@@ -336,6 +350,12 @@ OBJECT_TO_CLASS_MAPPER = {
     "stormtrooper": Stormtrooper,
     "tank": Tank,
     "armored_vehicle": ArmoredPersonnelCarriers,
+}
+
+UNIT_PASSABILITY={
+    "air_force":1,
+    "armored_transport":0,
+    "troops":0.5
 }
 
 DESTROYING_PROBABILITY = {
