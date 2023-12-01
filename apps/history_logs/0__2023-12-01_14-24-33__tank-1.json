@@ -1,0 +1,57 @@
+{
+    "steps": {
+        "1": {
+            "allies": [{"unit": "tank427", "start": [5, 8], "destination": [[5, 7]]}, {"unit": "tank470", "start": [4, 10], "destination": [[4, 9]]}], 
+            "enemies": []
+        }, 
+        "2": {
+            "allies": [{"unit": "tank427", "start": [5, 7], "destination": [[6, 7]]}, {"unit": "tank470", "start": [4, 9], "destination": [[5, 9]]}], 
+            "enemies": []
+        }, 
+        "3": {
+            "allies": [{"unit": "tank427", "start": [6, 7], "destination": [[6, 8]]}, {"unit": "tank470", "start": [5, 9], "destination": [[5, 10]]}], 
+            "enemies": []
+        }, 
+        "4": {
+            "allies": [{"unit": "tank427", "start": [6, 8], "destination": [[7, 8]]}, {"unit": "tank470", "start": [5, 10], "destination": [[6, 10]]}], 
+            "enemies": []
+        }, 
+        "5": {
+            "allies": [{"unit": "tank427", "start": [7, 8], "destination": [[8, 8]]}, {"unit": "tank470", "start": [6, 10], "destination": [[7, 10]]}], 
+            "enemies": []
+        }, 
+        "6": {
+            "allies": [{"unit": "tank427", "start": [8, 8], "destination": [[9, 8]]}, {"unit": "tank470", "start": [7, 10], "destination": [[8, 10]]}], 
+            "enemies": []
+        }, 
+        "7": {
+            "allies": [{"unit": "tank427", "start": [9, 8], "destination": [[10, 8]]}, {"unit": "tank470", "start": [8, 10], "destination": [[9, 10]]}], 
+            "enemies": []
+        }, 
+        "8": {
+            "allies": [{"unit": "tank427", "start": [10, 8], "destination": [[10, 9]]}, {"unit": "tank470", "start": [9, 10], "destination": [[9, 11]]}], 
+            "enemies": []
+        }, 
+        "9": {
+            "allies": [{"unit": "tank427", "start": [10, 9], "destination": [[10, 10]]}, {"unit": "tank470", "start": [9, 11], "destination": [[9, 12]]}], 
+            "enemies": []
+        }, 
+        "10": {
+            "allies": [{"unit": "tank427", "start": [10, 10], "destination": [[11, 10]]}, {"unit": "tank470", "start": [9, 12], "destination": [[10, 12]]}], 
+            "enemies": []
+        }, 
+        "11": {
+            "allies": [{"unit": "tank427", "start": [11, 10], "destination": [[11, 9]]}, {"unit": "tank470", "start": [10, 12], "destination": [[10, 11]]}], 
+            "enemies": []
+        }, 
+        "12": {
+            "allies": [{"unit": "tank427", "start": [11, 9], "destination": [[12, 9]]}, {"unit": "tank470", "start": [10, 11], "destination": [[11, 11]]}], 
+            "enemies": [{"unit": "tank399", "destroyed": false, "target": "tank427"}]
+        }, 
+        "13": {
+            "allies": [{"unit": "tank427", "destroyed": true, "target": "tank399"}, {"unit": "tank470", "start": [11, 11], "destination": [[11, 12]]}]
+        }
+    }, 
+    "score": 0, 
+    "outcome": "Victory"
+}
