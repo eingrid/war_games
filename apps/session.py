@@ -4,6 +4,8 @@ import random
 import numpy as np
 from utils import get_absolute_path
 from logger import Attack, Move
+from datetime import datetime
+from collections import Counter
 
 from common.map import Map
 from common.units import OBJECT_TO_CLASS_MAPPER
@@ -22,6 +24,7 @@ class SimulationSession:
         self.enemies = self.__init_units(self.__filter_units(enemies))
         self.step = 0
         self.logs = {}
+        self.reward = 0
         self.dead_allies = []
         self.dead_enemies = []
         self.__init_action_map()
@@ -98,7 +101,7 @@ class SimulationSession:
                 allies_unit.move(action[0])
                 leader_move=action
                 self.map.update_action_map(allies_unit.latitude, allies_unit.longtitude, 1)
-                log.location = allies_unit._get_location()
+                log.destination = allies_unit._get_location()
                 log.phase_number = self.step
             elif action[0] == "attack":
                 reachable_targets = action[1]
@@ -114,7 +117,7 @@ class SimulationSession:
                 allies_unit._follow_wehicle(action[1])
             elif action[0] == 'leave_vehicle':
                 allies_unit._leave_vehicle()
-            logs.append(log)
+            logs.append(log._to_dict())
             print
         return logs
 
@@ -158,9 +161,16 @@ class SimulationSession:
         print(self.step)
         return self.logs
         
-
-    def _save_logs_to_json(self):
-        pass
+    def _save_logs_to_json(self, outcome):
+        time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        teams = '_'.join([f"{class_name.lower()}-{amount}" for class_name, amount in Counter(obj.__class__.__name__ for obj in self.enemies).items()])
+        logs = {
+            'steps': self.logs,
+            'score': self.reward,
+            'outcome': outcome
+            }
+        with open(f"history_logs/{self.reward}__{time}__{teams}.json", "w") as outfile:
+            json.dump(logs, outfile)
 
 if __name__ == '__main__':
     ss = SimulationSession(Map(frontline_longtitude=18, terrain=np.ones(shape=(20,20))), allies=ALLIES, enemies=ENEMIES, simulation= Uniform() )
