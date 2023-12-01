@@ -16,7 +16,7 @@ class Move(Action):
         self._destination = None
         super().__init__(unit)
 
-    def set_destination_location(self, *location):
+    def set_destination_location(self, location):
         self._destination = location
 
     def get_destination_location(self):

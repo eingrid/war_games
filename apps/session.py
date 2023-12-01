@@ -23,7 +23,11 @@ class SimulationSession:
         self.allies = self.__init_units(allies)
         self.enemies = self.__init_units(self.__filter_units(enemies))
         self.step = 0
-        self.logs = {}
+        self.logs = {
+            'allies_starting_position': {ally.name: ally._get_location() for ally in self.allies},
+            'enemies_starting_position': {enemy.name: enemy._get_location() for enemy in self.enemies},
+            'buttle_phases': {},
+        }
         self.reward = 0
         self.dead_allies = []
         self.dead_enemies = []
@@ -83,17 +87,17 @@ class SimulationSession:
         allies.sort(key=lambda x: x.longtitude, reverse=True)
         leader_move=None
         for allies_unit in allies:
-            avaliable_actions = allies_unit.get_avaliable_actions(allies, enemies, self.map, can_move)
-            if(len(avaliable_actions) == 0):
+            available_actions = allies_unit._get_available_actions(allies, enemies, self.map, can_move)
+            if(len(available_actions) == 0):
                 continue
             
             # select move
             # TODO: waiting for feedback regarding unit moves unification
-            if leader_move in avaliable_actions:
+            if leader_move in available_actions:
                 action = leader_move
             else:
-                generated_index = np.random.randint(0, len(avaliable_actions))
-                action = avaliable_actions[generated_index]
+                generated_index = np.random.randint(0, len(available_actions))
+                action = available_actions[generated_index]
 
             if "move" in action[0]:
                 log = Move(allies_unit)
@@ -130,11 +134,11 @@ class SimulationSession:
     def run_phase(self):
         """Units make their moves on this step"""
         print(self.step)
-        self.logs[self.step] = {}
+        self.logs['buttle_phases'][self.step] = {}
         alive_allies, alive_enemies = self._get_alive_units()
         # alies make their move
-        allies_logs = self.__make_moves(alive_allies, alive_enemies, disable='enemies',can_move=True)
-        self.logs[self.step]['allies'] = allies_logs
+        allies_logs = self.__make_moves(alive_allies, alive_enemies, disable='enemies', can_move=True)
+        self.logs['buttle_phases'][self.step]['allies'] = allies_logs
         alive_allies, alive_enemies = self._get_alive_units()
         if len(alive_enemies) == 0:
             print ("Victory")
@@ -142,8 +146,8 @@ class SimulationSession:
         
         alive_allies, alive_enemies = self._get_alive_units()
         # enemies make their move
-        enemies_logs = self.__make_moves(alive_enemies, alive_allies, disable='allies',can_move=False)
-        self.logs[self.step]['enemies'] = enemies_logs
+        enemies_logs = self.__make_moves(alive_enemies, alive_allies, disable='allies', can_move=False)
+        self.logs['buttle_phases'][self.step]['enemies'] = enemies_logs
         alive_allies, alive_enemies = self._get_alive_units()
         if len(alive_allies) == 0:
             print ("Defeat")
@@ -165,7 +169,9 @@ class SimulationSession:
         time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         teams = '_'.join([f"{class_name.lower()}-{amount}" for class_name, amount in Counter(obj.__class__.__name__ for obj in self.enemies).items()])
         logs = {
-            'steps': self.logs,
+            'allies_starting_position': self.logs['allies_starting_position'],
+            'enemies_starting_position': self.logs['enemies_starting_position'],
+            'buttle_phases': self.logs['buttle_phases'],
             'score': self.reward,
             'outcome': outcome
             }
