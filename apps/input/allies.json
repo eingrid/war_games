@@ -4,7 +4,7 @@
             "timestamp": 0,
             "location": {
                 "longtitude": 4,
-                "latitude": 10
+                "latitude": 9
             },
             "located_by": "drone1697i2bg335",
             "object_name": "tank",
@@ -18,6 +18,16 @@
             },
             "located_by": "drone1697i2bg335",
             "object_name": "tank",
+            "object_confidence": 0.8
+        },
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 4,
+                "latitude": 7
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "artillery",
             "object_confidence": 0.8
         }
     ]
