@@ -382,3 +382,15 @@ DESTROYING_PROBABILITY = {
         Stormtrooper: 0.0,
     },
 }
+
+OBJECT_TO_INT_CLASS_MAPPER = {
+    "drone": 1,
+    "helicopter": 2,
+    "bomber": 3,
+    "fighter": 4,
+    "artillery": 5,
+    "mlrs": 6,
+    "stormtrooper": 7,
+    "tank": 8,
+    "armored_vehicle": 9,
+}

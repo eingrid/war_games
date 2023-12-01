@@ -73,7 +73,6 @@ class SimulationSession:
         for allies_unit in allies:
 
             action = self.simulation.select_move(allies_unit,allies,enemies,self.map)
-            
             if "move" in action[0]:
                 log = Move(allies_unit)
                 allies_unit.move(action[0])
