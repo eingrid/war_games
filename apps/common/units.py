@@ -9,7 +9,8 @@ class MilitaryUnit:
         latitude: int,
         altitude: int,
         attack_range: int,
-        passability: float
+        passability: float,
+        min_attack_range = None
     ) -> None:
         if(passability < 0 or passability > 1):
             raise ValueError('passabiity should be between 0 and 1')
@@ -19,12 +20,14 @@ class MilitaryUnit:
         self.altitude = altitude
         self.attack_range = attack_range
         self.destroyed = False
-        self.passability = passability
+        self.passability = passability   
+        self.min_attack_range = min_attack_range if min_attack_range is not None else 0
 
-    def __set_name__(self, owner, name):
+
+    def __set_name__(self, name):
         self.name = "_" + name
 
-    def __get__(self, instance, owner):
+    def __get__(self, instance):
         return getattr(instance, self.name)
 
     def __set__(self, instance, value):
@@ -116,10 +119,11 @@ class GroundForce(MilitaryUnit):
         latitude: int,
         altitude: int,
         attack_range: int,
-        passability: float
+        passability: float,
+        min_attack_range = None
     ) -> None:
         # self.permeability = 1.0
-        super().__init__(name, longtitude, latitude, altitude, attack_range,passability)
+        super().__init__(name, longtitude, latitude, altitude, attack_range,passability, min_attack_range)
 
 
 class ArmoredTransport(GroundForce):
@@ -230,15 +234,24 @@ class Artillery(GroundForce):
                          longtitude, 
                          latitude, 
                          altitude,
-                         attack_range=2000,
-                         passability=0.5)    
+                         attack_range=float('inf'),
+                         passability=UNIT_PASSABILITY["armored_transport"],
+                         min_attack_range=10)
+        self.steps_from_last_shot=ARTILLERY_RECHARGE_STEPS_COUNT
         
-    def get_available_actions(self, allies, enemies, map, can_move):
+    def get_avaliable_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
+
+        # recharge
+        if(self.steps_from_last_shot < ARTILLERY_RECHARGE_STEPS_COUNT):
+            self.steps_from_last_shot += 1
+            return avaliable_moves
+        
         # attack
         reachable_priority_targets = self._get_reachable_priority_targets(enemies)
         if len(reachable_priority_targets) > 0:
             avaliable_moves.append(("attack", reachable_priority_targets))
+            self.steps_from_last_shot = 0
         return avaliable_moves
 
 
@@ -352,6 +365,9 @@ OBJECT_TO_CLASS_MAPPER = {
     "armored_vehicle": ArmoredPersonnelCarriers,
 }
 
+# simulation settings
+ARTILLERY_RECHARGE_STEPS_COUNT = 4
+
 UNIT_PASSABILITY={
     "air_force":1,
     "armored_transport":0,
@@ -376,11 +392,11 @@ DESTROYING_PROBABILITY = {
         Artillery: 0.0,
     },
     Artillery: {
-        Tank: 0.0,
-        ArmoredPersonnelCarriers: 0.0,
-        MLRS: 0.0,
-        Stormtrooper: 0.0,
-        Artillery: 0.0,
+        Tank: 0.1,
+        ArmoredPersonnelCarriers: 0.1,
+        MLRS: 0.2,
+        Stormtrooper: 0.2,
+        Artillery: 0.1,
     },
     MLRS: {
         Tank: 0.5,
@@ -395,6 +411,7 @@ DESTROYING_PROBABILITY = {
         ArmoredPersonnelCarriers: 0.0,
         MLRS: 0.5,
         Stormtrooper: 0.5,
+        Artillery: 0.5,
     },
     ArmoredPersonnelCarriers: {
         ArmoredPersonnelCarriers: 0.0,
