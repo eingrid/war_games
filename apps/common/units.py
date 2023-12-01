@@ -129,11 +129,10 @@ class ArmoredTransport(GroundForce):
         longtitude: int,
         latitude: int,
         altitude: int,
-        attack_range: int,
-        passability: float
+        attack_range: int
     ) -> None:
         self.troops_slot = None
-        super().__init__(name, longtitude, latitude, altitude, attack_range,passability)
+        super().__init__(name, longtitude, latitude, altitude, attack_range,UNIT_PASSABILITY["armored_transport"])
 
     def get_avaliable_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
@@ -154,18 +153,17 @@ class ArmoredTransport(GroundForce):
 
 
 class ArmoredPersonnelCarriers(ArmoredTransport):
-    def __init__(self, name: str, longtitude: int, latitude: int, passability, altitude=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=1000, passability=passability)
+    def __init__(self, name: str, longtitude: int, latitude: int, altitude=0) -> None:
+        super().__init__(name, longtitude, latitude, altitude, attack_range=1000)
 
 
 class Tank(ArmoredTransport):
-    def __init__(self, name: str, longtitude: int, latitude: int, altitude=0,passability=0) -> None:
+    def __init__(self, name: str, longtitude: int, latitude: int, altitude=0) -> None:
         super().__init__(name, 
                          longtitude, 
                          latitude,
                          altitude, 
-                         attack_range=5,
-                         passability=passability)
+                         attack_range=5)
 
 
 class Troops(GroundForce):
@@ -176,10 +174,9 @@ class Troops(GroundForce):
         latitude: int,
         altitude: int,
         attack_range: int,
-        passability: float,
     ) -> None:
         self.covered_by_vehicle = None
-        super().__init__(name, longtitude, latitude, altitude, attack_range,passability)
+        super().__init__(name, longtitude, latitude, altitude, attack_range,UNIT_PASSABILITY["troops"])
 
     def _follow_vehicle(self, unit):
         unit.troops_slot = self
@@ -218,23 +215,23 @@ class Troops(GroundForce):
 
 
 class Stormtrooper(Troops):
-    def __init__(self, name, longtitude, latitude, altitude=0,passability=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=300,passability=passability)
+    def __init__(self, name, longtitude, latitude, altitude=0) -> None:
+        super().__init__(name, longtitude, latitude, altitude, attack_range=300)
 
 
 class MLRS(Troops):
     def __init__(self, name, longtitude, latitude, altitude=0,passability=0.5) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=500,passability=passability)
+        super().__init__(name, longtitude, latitude, altitude, attack_range=500)
 
 
 class Artillery(GroundForce):
-    def __init__(self, name, longtitude, latitude, altitude=0,passability=0.5) -> None:
+    def __init__(self, name, longtitude, latitude, altitude=0) -> None:
         super().__init__(name, 
                          longtitude, 
                          latitude, 
                          altitude,
                          attack_range=2000,
-                         passability=passability)    
+                         passability=0.5)    
         
     def get_available_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
@@ -263,7 +260,7 @@ class AirForce(MilitaryUnit):
         self.timeout = 0
         self.going_home = False
         self.steps_to_airport = 0
-        super().__init__(name, longtitude, latitude, altitude, attack_range,passability=1)
+        super().__init__(name, longtitude, latitude, altitude, attack_range,UNIT_PASSABILITY["air_force"])
 
     def _move_up(self):
         self.altitude += self.delta_altitude
@@ -353,6 +350,12 @@ OBJECT_TO_CLASS_MAPPER = {
     "stormtrooper": Stormtrooper,
     "tank": Tank,
     "armored_vehicle": ArmoredPersonnelCarriers,
+}
+
+UNIT_PASSABILITY={
+    "air_force":1,
+    "armored_transport":0,
+    "troops":0.5
 }
 
 DESTROYING_PROBABILITY = {
