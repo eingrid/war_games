@@ -1,3 +1,4 @@
+from enums import Cell
 import numpy as np
 
 
@@ -54,13 +55,13 @@ class MilitaryUnit:
         return list(DESTROYING_PROBABILITY[self.__class__].keys())
 
     def _fire(self, enemy_unit, field_coeff=1.0):
-        if (
-            np.random.rand()
-            < DESTROYING_PROBABILITY[self.__class__][enemy_unit.__class__] * field_coeff
-        ):
-            enemy_unit.destroyed = True
-            return True
-        return False
+        # if (
+        #     np.random.rand()
+        #     < DESTROYING_PROBABILITY[self.__class__][enemy_unit.__class__] * field_coeff
+        # ):
+        enemy_unit.destroyed = True
+        return True
+        # return False
 
     def _move_north(self):
         self.latitude += 1
@@ -72,17 +73,17 @@ class MilitaryUnit:
         self.longtitude -= 1
 
     def _move_east(self):
-        self.latitude += 1
+        self.longtitude += 1
 
     def _get_avaliable_moves(self, map):
         avaliable_moves = []
-        if self.longtitude != 0:
+        if self.longtitude -1 >= 0 and map.terrain[self.latitude-1,self.longtitude] == Cell.EMPTY.value["value"]:
             avaliable_moves.append(("move_west",))
-        if self.longtitude != map.max_longtitude:
+        if self.longtitude + 1 < map.max_longtitude and map.terrain[self.latitude,self.longtitude + 1] == Cell.EMPTY.value["value"]:
             avaliable_moves.append(("move_east",))
-        if self.latitude != 0:
+        if self.latitude +1 < map.max_latitude and map.terrain[self.latitude +1, self.longtitude] == Cell.EMPTY.value["value"]:
             avaliable_moves.append(("move_north",))
-        if self.latitude != map.max_latitude:
+        if self.latitude - 1  >=0 and map.terrain[self.latitude -1 ,self.longtitude] == Cell.EMPTY.value["value"]:
             avaliable_moves.append(("move_south",))
         return avaliable_moves
 
@@ -147,12 +148,12 @@ class ArmoredTransport(GroundForce):
 
 class ArmoredPersonnelCarriers(ArmoredTransport):
     def __init__(self, name: str, longtitude: int, latitude: int, altitude=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=1000)
+        super().__init__(name, longtitude, latitude, altitude, attack_range=10)
 
 
 class Tank(ArmoredTransport):
     def __init__(self, name: str, longtitude: int, latitude: int, altitude=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=1500)
+        super().__init__(name, longtitude, latitude, altitude, attack_range=15)
 
 
 class Troops(GroundForce):
@@ -207,17 +208,17 @@ class Troops(GroundForce):
 
 class Stormtrooper(Troops):
     def __init__(self, name, longtitude, latitude, altitude=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=300)
+        super().__init__(name, longtitude, latitude, altitude, attack_range=5)
 
 
 class MLRS(Troops):
     def __init__(self, name, longtitude, latitude, altitude=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=500)
+        super().__init__(name, longtitude, latitude, altitude, attack_range=5)
 
 
 class Artillery(GroundForce):
     def __init__(self, name, longtitude, latitude, altitude=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=2000)
+        super().__init__(name, longtitude, latitude, altitude, attack_range=20)
 
     def get_avaliable_actions(self, allies, enemies, map):
         avaliable_moves = []
@@ -320,7 +321,7 @@ class Drone(AirForce):
             longtitude,
             latitude,
             altitude,
-            attack_range=5000,
+            attack_range=20,
             min_altitude=5,
             max_altitude=1000,
         )

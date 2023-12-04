@@ -3,12 +3,13 @@ from keras.layers import Dense, Activation, Input
 from keras.models import Model, load_model
 from tensorflow.keras.optimizers.legacy import Adam
 import numpy as np
+import tensorflow as tf
 from tensorflow.python.framework.ops import disable_eager_execution
 disable_eager_execution()
 
 class Agent(object):
     def __init__(self, alpha, beta, gamma=0.99, n_actions=4,
-                 layer1_size=1024, layer2_size=512, input_dims=4):
+                 layer1_size=256, layer2_size=128, input_dims=5):
         self.gamma = gamma
         self.alpha = alpha
         self.beta = beta
@@ -17,7 +18,9 @@ class Agent(object):
         self.fc2_dims = layer2_size
         self.n_actions = n_actions
 
-        self.actor, self.critic, self.policy = self.build_actor_critic_network()
+        self.epsilon = 0.5
+        with tf.device("/GPU:0"):
+            self.actor, self.critic, self.policy = self.build_actor_critic_network()
         self.action_space = [i for i in range(n_actions)]
 
     def build_actor_critic_network(self):
@@ -52,7 +55,10 @@ class Agent(object):
     def choose_action(self, observation):
         state = observation[np.newaxis, :]
         probabilities = self.policy.predict(state)[0]
-        action = np.random.choice(self.action_space, p=probabilities)
+        if np.random.rand() < self.epsilon:
+            action = np.random.choice(self.action_space)
+        else:
+            action = np.random.choice(self.action_space, p=probabilities)
 
         return action
 

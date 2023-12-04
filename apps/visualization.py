@@ -43,21 +43,45 @@ class Visualization:
 
         pygame.display.flip()
 
-    def run_simulation(self):
+    def run_simulation(self, type):
         outcome = True
-        
-        while outcome not in {"Victory", "Defeat"}:
-            self.ss.step += 1
-            outcome = self.ss.run_phase()
-            current_map = self.ss.map
-            alive_allies,alive_enemies = self.ss._get_alive_units()
-            self.redraw(current_map,alive_allies,alive_enemies)
 
-            # Add a delay of 1 for visualization
-            pygame.time.wait(1000)
-            
-        self.ss._save_logs_to_json()
+        if type == 'MonteCarlo':
+            while outcome not in {"Victory", "Defeat"}:
+                self.ss.step += 1
+                outcome = self.ss.run_phase()
+                current_map = self.ss.map
+                alive_allies,alive_enemies = self.ss._get_alive_units()
+                self.redraw(current_map,alive_allies,alive_enemies)
 
+                # Add a delay of 1 for visualization
+                pygame.time.wait(1000)
+                
+            self.ss._save_logs_to_json()
+        elif type == 'actor_critic':
+            while outcome not in ("Victory","Defeat"):
+                self.ss.step += 1
+                ss,outcome = self.ss.run_actor_critic_phase()
+                current_map = ss.map
+                
+                alive_allies,alive_enemies = ss._get_alive_units()
+                self.redraw(current_map,alive_allies,alive_enemies)
+
+                # Add a delay of 1 for visualization
+                pygame.time.wait(1000)
+        elif type == 'Q_learning':
+            while outcome not in ("Victory","Defeat"):
+                self.ss.step += 1
+                ss,outcome = self.ss.run_q_learning_agent()
+                current_map = ss.map
+
+                alive_allies,alive_enemies = ss._get_alive_units()
+                self.redraw(current_map,alive_allies,alive_enemies)
+
+                # Add a delay of 1 for visualization
+                # pygame.time.wait(1000)
+                pygame.time.wait(300)
+            print(outcome)
         pygame.quit()
 
     def simulate_and_visualize_best(self,n):

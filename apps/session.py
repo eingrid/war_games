@@ -9,8 +9,14 @@ from common.units import OBJECT_TO_CLASS_MAPPER
 from montecarlo_simulation.montecarlo import MonteCarlo
 from uniform_simulation.uniform import Uniform
 
-ALLIES = json.load(open("input/allies.json", "r")).get("forces")
-ENEMIES = json.load(open("input/enemies.json", "r")).get("forces")
+
+import sys
+print(sys.path)
+
+ALLIES = json.load(open("/run/media/eingrid/ec26c78b-20bc-47f1-b2d5-33a92d92c9b6/UCU/Intro to ds/apps/input/allies.json", "r")).get("forces")
+ENEMIES = json.load(open("/run/media/eingrid/ec26c78b-20bc-47f1-b2d5-33a92d92c9b6/UCU/Intro to ds/apps/input/enemies.json", "r")).get("forces")
+
+from common.units import OBJECT_TO_INT_CLASS_MAPPER
 
 
 class SimulationSession:
@@ -72,7 +78,8 @@ class SimulationSession:
         logs = []
         for allies_unit in allies:
 
-            action = self.simulation.select_move(allies_unit,allies,enemies,self.map)
+            action = self.simulation.select_move(allies_unit,allies,enemies,self.map,self)
+
             if "move" in action[0]:
                 log = Move(allies_unit)
                 allies_unit.move(action[0])
@@ -122,6 +129,21 @@ class SimulationSession:
             return f"Defeat"
         return True
 
+    def run_actor_critic_phase(self):
+        """Runs actor critic"""
+        ss, status = self.simulation.perform_step(ss=self)
+        self.allies = ss.allies
+        self.enemies = ss.enemies
+        return ss,status
+
+    def run_q_learning_agent(self):
+        """Runs actor critic"""
+        ss, status = self.simulation.perform_step(ss=self)
+        self.allies = ss.allies
+        self.enemies = ss.enemies
+        return ss, status
+        
+
     def run(self):
         """Start simulation process as a loop of phases"""
         outcome = True
@@ -134,6 +156,35 @@ class SimulationSession:
 
     def _save_logs_to_json(self):
         pass
+
+    # def select_move_q_learning(self, observation):
+    #     self.step += 1
+
+        # return self.simulation.choose_action(str(observation.to_list()))
+
+
+    # def get_state(self):
+    #     """State is a map values and position of allies and enemies on the map"""
+    #     terrain = self.map.terrain
+    #     allies = self.allies
+    #     enemies = self.enemies
+    #     allies_position_and_type = []
+    #     enemies_position_and_type = []
+    #     for ally in allies:
+    #         allies_position_and_type.extend([ally.latitude, ally.longtitude,self._map_name_to_int(ally.name), int(ally.destroyed),1])
+    #
+    #     for enemy in enemies:
+    #         enemies_position_and_type.extend([enemy.latitude, enemy.longtitude,self._map_name_to_int(enemy.name),int(enemy.destroyed),-5])
+    #     # state = np.concatenate([terrain.reshape(-1,),allies_position_and_type,enemies_position_and_type,[self.time]])
+    #     state = np.concatenate([allies_position_and_type,enemies_position_and_type,[self.step]])
+    #     # ####print(np.concatenate([self.unit_position, self.enemy_position]))
+    #     return state #np.concatenate([self.unit_position, self.enemy_position])
+    #
+    # def _map_name_to_int(self, name):
+    #     for k,v in OBJECT_TO_INT_CLASS_MAPPER.items():
+    #         if k in name or name in k:
+    #             return v
+    #     raise ValueError(f"Can't map troop class to int, Troop name {name}")
 
 
 if __name__ == "__main__":
