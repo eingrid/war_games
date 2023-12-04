@@ -1,3 +1,12 @@
 noise==1.2.2
 numpy==1.26.1
 pygame==2.5.2
+keras
+tensorflow[and-cuda]
+tensorrt
+matplotlib
+tqdm
+--extra-index-url https://pypi.nvidia.com
+tensorrt-bindings==8.6.1
+tensorrt-libs==8.6.1
+pandas

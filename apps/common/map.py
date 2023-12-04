@@ -17,9 +17,9 @@ class Map:
         self.max_longtitude, self.max_latitude = terrain.shape
         # self.terrain = self.__convert_to_np_map(terrain)
         self.noise_cell_mapping = {
-            (0.0, 0.2): Cell.TREE.value["value"],
-            (0.2, 0.4): Cell.HILL.value["value"],
-            (0.4, 0.6): Cell.MOUNTAIN.value["value"],
+            (0.0, 0.05): Cell.TREE.value["value"],
+            (0.0, 0.1): Cell.HILL.value["value"],
+            (0.0, 0.1): Cell.MOUNTAIN.value["value"],
         }
         self.terrain = self._generate_map_using_perlin_noise()
 
