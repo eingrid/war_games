@@ -1,6 +1,6 @@
 import pygame
 import pygame.freetype
-from utils import get_absolute_path
+from utils import OUTCOMES, get_absolute_path
 from session import SimulationSession
 from common.map import Map 
 from enums import Cell, TroopImage
@@ -59,7 +59,7 @@ class Visualization:
                 if event.type == pygame.QUIT:
                     self.is_running = False
 
-            while outcome not in {"Victory", "Defeat"}:
+            while outcome not in OUTCOMES:
                 self.ss.step += 1
                 outcome = self.ss.run_phase()
                 current_map = self.ss.map
