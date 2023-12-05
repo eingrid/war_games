@@ -89,8 +89,7 @@ class SimulationSession:
             if leader_move in avaliable_actions:
                 action = leader_move
             else:
-                generated_index = np.random.randint(0, len(avaliable_actions))
-                action = avaliable_actions[generated_index]
+                action = self.simulation.select_move(avaliable_actions)
 
             if "move" in action[0]:
                 log = Move(allies_unit)
@@ -136,7 +135,6 @@ class SimulationSession:
         if(all(isinstance(unit, Artillery) for unit in alive_allies)):
             return f"Retreat"
         if len(alive_enemies) == 0:
-            print ("Victory")
             return f"Victory"
         
         alive_allies, alive_enemies = self._get_alive_units()
@@ -145,7 +143,6 @@ class SimulationSession:
         self.logs[self.step]['enemies'] = enemies_logs
         alive_allies, alive_enemies = self._get_alive_units()
         if len(alive_allies) == 0:
-            print ("Defeat")
             return f"Defeat"
         return True
 
