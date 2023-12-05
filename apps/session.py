@@ -2,11 +2,11 @@ import json
 import random
 
 import numpy as np
-from utils import get_absolute_path
+from utils import OUTCOMES, get_absolute_path
 from logger import Attack, Move
 
 from common.map import Map
-from common.units import OBJECT_TO_CLASS_MAPPER
+from common.units import OBJECT_TO_CLASS_MAPPER, Artillery
 from montecarlo_simulation.montecarlo import MonteCarlo
 from uniform_simulation.uniform import Uniform
 
@@ -133,6 +133,8 @@ class SimulationSession:
         allies_logs = self.__make_moves(alive_allies, alive_enemies, disable='enemies',can_move=True)
         self.logs[self.step]['allies'] = allies_logs
         alive_allies, alive_enemies = self._get_alive_units()
+        if(all(isinstance(unit, Artillery) for unit in alive_allies)):
+            return f"Retreat"
         if len(alive_enemies) == 0:
             print ("Victory")
             return f"Victory"
@@ -151,7 +153,7 @@ class SimulationSession:
         """Start simulation process as a loop of phases"""
         outcome = True
         
-        while outcome not in {'Victory', 'Defeat'}:
+        while outcome not in OUTCOMES:
             self.step += 1
             outcome = self.run_phase()
         self._save_logs_to_json()
