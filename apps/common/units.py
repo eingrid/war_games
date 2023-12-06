@@ -374,6 +374,13 @@ UNIT_PASSABILITY={
     "troops":0.5
 }
 
+UNIT_FIGHTING_IMPACT={
+    Artillery: 0.8,
+    MLRS: 0.6,
+    Stormtrooper: 0.5,
+    Tank: 0.8,
+}
+
 DESTROYING_PROBABILITY = {
     Drone: {Tank: 0.0, ArmoredPersonnelCarriers: 0.0, MLRS: 0.0, Stormtrooper: 0.0},
     Helicopter: {
