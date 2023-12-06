@@ -6,7 +6,7 @@ from utils import OUTCOMES, get_absolute_path
 from logger import Attack, Move
 
 from common.map import Map
-from common.units import OBJECT_TO_CLASS_MAPPER, Artillery
+from common.units import OBJECT_TO_CLASS_MAPPER, UNIT_FIGHTING_IMPACT, Artillery
 from montecarlo_simulation.montecarlo import MonteCarlo
 from uniform_simulation.uniform import Uniform
 
@@ -123,6 +123,9 @@ class SimulationSession:
         alive_enemies = list(filter(not_destroyed, self.enemies))
         return alive_allies, alive_enemies
 
+    def _get_unit_strength(self, units_left) -> float:
+        return sum([UNIT_FIGHTING_IMPACT[type(unit)] for unit in units_left])
+    
     def run_phase(self):
         """Units make their moves on this step"""
         print(self.step)

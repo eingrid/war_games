@@ -6,11 +6,13 @@ from common.map import Map
 from enums import Cell, TroopImage
 
 CELL_SIZE = 18
+SHIFT_MARGIN=5
 
 class Visualization:
     def __init__(self, width, height,session : SimulationSession):
         pygame.init()
-        self.GAME_FONT = pygame.freetype.Font(None, 40)
+        self.main_game_font = pygame.freetype.Font(None, 40)
+        self.additional_game_font = pygame.freetype.Font(None, 18)
         self.ss = session
         self.width = width
         self.height = height
@@ -47,9 +49,13 @@ class Visualization:
         pygame.display.flip()
 
     def _dispay_outcome(self, outcome):
-        txtsurf, rect = self.GAME_FONT.render(outcome)
+        txtsurf, rect = self.main_game_font.render(outcome)
         self.screen.blit(txtsurf, (self.width/2 - rect.width // 2, self.height/2 - rect.height // 2))
         pygame.display.flip()
+
+    def _update_strength(self, strength, isAllies=True):
+        txtsurf, rect = self.additional_game_font.render(f'Strength: {strength:.1f}')
+        self.screen.blit(txtsurf, (SHIFT_MARGIN if isAllies else self.width-rect.width-SHIFT_MARGIN, SHIFT_MARGIN))
 
     def run_simulation(self):
         outcome = True
@@ -64,8 +70,12 @@ class Visualization:
                 outcome = self.ss.run_phase()
                 current_map = self.ss.map
                 alive_allies,alive_enemies = self.ss._get_alive_units()
+                alies_strength = self.ss._get_unit_strength(alive_allies)
+                enemies_strength = self.ss._get_unit_strength(alive_enemies)
                 self.redraw(current_map,alive_allies,alive_enemies)
 
+                self._update_strength(alies_strength)
+                self._update_strength(enemies_strength,isAllies=False)
                 pygame.display.flip()
                 # Add a delay of 0.5s for visualization
                 pygame.time.wait(500)

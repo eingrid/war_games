@@ -1,6 +1,0 @@
-{
-    "actions": {
-        "no_enemy_detected": {"attack": 0, "move_east": 0.5,"move_north": 0.25,"move_south": 0.25},
-        "enemy_detected": {"attack": 1, "move": 0}
-    }
-}
