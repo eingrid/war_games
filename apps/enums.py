@@ -14,7 +14,7 @@ class Cell(Enum):
     }
 
 class TroopImage(Enum):
-    TROOP = {"name": "troop", "image": pygame.image.load(get_absolute_path("/textures/troop_tex.png"))}
+    MLRS = {"name": "mlrs", "image": pygame.image.load(get_absolute_path("/textures/troop_tex.png"))}
     TANK = {"name": "tank", "image": pygame.image.load(get_absolute_path("/textures/tank_modified.png"))}
     ARTILLERY = {"name": "artillery", "image": pygame.image.load(get_absolute_path("/textures/artillery_tex.png"))}
     
