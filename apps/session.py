@@ -80,7 +80,7 @@ class SimulationSession:
         allies.sort(key=lambda x: x.longtitude, reverse=True)
         leader_move=None
         for allies_unit in allies:
-            avaliable_actions = allies_unit.get_avaliable_actions(allies, enemies, self.map, can_move)
+            avaliable_actions = allies_unit.get_available_actions(allies, enemies, self.map, can_move)
             if(len(avaliable_actions) == 0):
                 continue
             

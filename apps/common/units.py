@@ -138,7 +138,7 @@ class ArmoredTransport(GroundForce):
         self.troops_slot = None
         super().__init__(name, longtitude, latitude, altitude, attack_range,UNIT_PASSABILITY["armored_transport"])
 
-    def get_avaliable_actions(self, allies, enemies, map, can_move):
+    def get_available_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
         # attack
         reachable_priority_targets = self._get_reachable_priority_targets(enemies)
@@ -194,7 +194,7 @@ class Troops(GroundForce):
     def _is_covered_by_vehicle(self):
         return self.covered_by_vehicle is None
     
-    def get_avaliable_actions(self, allies, enemies, map, can_move):
+    def get_available_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
         # attack
         reachable_priority_targets = self._get_reachable_priority_targets(enemies)
@@ -203,18 +203,18 @@ class Troops(GroundForce):
         elif (can_move):
             avaliable_moves.extend(self._get_available_moves(map))
         #intereaction with armored vehicle
-        if self.covered_by_vehicle:
-            avaliable_moves.append(('leave_vehicle', self.covered_by_vehicle))
-        elif not self.covered_by_vehicle:
-            vehicles_in_same_field = list(filter(lambda unit: isinstance(unit, ArmoredTransport) and 
-                                                            not unit.troops_slot and 
-                                                            not unit.destroyed and 
-                                                            self._get_location() == unit._get_location(), 
-                                                            allies))
-            if len(vehicles_in_same_field) > 0:
-                avaliable_moves.append(('follow_vehicle', vehicles_in_same_field))
-            #move
-            avaliable_moves.extend(self._get_avaliable_moves(map))
+        # if self.covered_by_vehicle:
+        #     avaliable_moves.append(('leave_vehicle', self.covered_by_vehicle))
+        # elif not self.covered_by_vehicle:
+        #     vehicles_in_same_field = list(filter(lambda unit: isinstance(unit, ArmoredTransport) and 
+        #                                                     not unit.troops_slot and 
+        #                                                     not unit.destroyed and 
+        #                                                     self._get_location() == unit._get_location(), 
+        #                                                     allies))
+        #     if len(vehicles_in_same_field) > 0:
+        #         avaliable_moves.append(('follow_vehicle', vehicles_in_same_field))
+        #     #move
+        #     avaliable_moves.extend(self._get_available_moves(map))
         return avaliable_moves
 
 
@@ -225,7 +225,7 @@ class Stormtrooper(Troops):
 
 class MLRS(Troops):
     def __init__(self, name, longtitude, latitude, altitude=0,passability=0.5) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=500)
+        super().__init__(name, longtitude, latitude, altitude, attack_range=2)
 
 
 class Artillery(GroundForce):
@@ -239,7 +239,7 @@ class Artillery(GroundForce):
                          min_attack_range=10)
         self.steps_from_last_shot=ARTILLERY_RECHARGE_STEPS_COUNT
         
-    def get_avaliable_actions(self, allies, enemies, map, can_move):
+    def get_available_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
 
         # recharge
@@ -281,14 +281,14 @@ class AirForce(MilitaryUnit):
     def _move_down(self):
         self.altitude -= self.delta_altitude
 
-    def get_avaliable_actions(self, allies, enemies, map):
+    def get_available_actions(self, allies, enemies, map):
         avaliable_actions = []
         # attack
         reachable_priority_targets = self._get_reachable_priority_targets(enemies)
         if len(reachable_priority_targets) > 0:
             avaliable_actions.append(("attack", reachable_priority_targets))
         # moves
-        avaliable_actions.extend(self._get_avaliable_moves(map))
+        avaliable_actions.extend(self._get_available_moves(map))
         # increase/decrease altitude
         if self.altitude + self.delta_altitude < self.max_altitude:
             avaliable_actions.append(
@@ -407,6 +407,7 @@ DESTROYING_PROBABILITY = {
     },
     MLRS: {
         Tank: 0.5,
+        Artillery: 0.2,
         ArmoredPersonnelCarriers: 0.5,
     },
     Stormtrooper: {

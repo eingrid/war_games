@@ -24,6 +24,46 @@
             "timestamp": 0,
             "location": {
                 "longtitude": 4,
+                "latitude": 8
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "tank",
+            "object_confidence": 0.8
+        },
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 4,
+                "latitude": 8
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "mlrs",
+            "object_confidence": 0.8
+        },
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 3,
+                "latitude": 8
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "mlrs",
+            "object_confidence": 0.8
+        },  
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 5,
+                "latitude": 8
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "mlrs",
+            "object_confidence": 0.8
+        },
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 4,
                 "latitude": 7
             },
             "located_by": "drone1697i2bg335",
