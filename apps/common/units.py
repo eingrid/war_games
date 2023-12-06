@@ -59,7 +59,7 @@ class MilitaryUnit:
         #     np.random.rand()
         #     < DESTROYING_PROBABILITY[self.__class__][enemy_unit.__class__] * field_coeff
         # ):
-        enemy_unit.destroyed = True
+        #     enemy_unit.destroyed = True
         return True
         # return False
 
@@ -77,14 +77,19 @@ class MilitaryUnit:
 
     def _get_avaliable_moves(self, map):
         avaliable_moves = []
-        if self.longtitude -1 >= 0 and map.terrain[self.latitude-1,self.longtitude] == Cell.EMPTY.value["value"]:
-            avaliable_moves.append(("move_west",))
-        if self.longtitude + 1 < map.max_longtitude and map.terrain[self.latitude,self.longtitude + 1] == Cell.EMPTY.value["value"]:
-            avaliable_moves.append(("move_east",))
+        # print(self.latitude, self.longtitude)
         if self.latitude +1 < map.max_latitude and map.terrain[self.latitude +1, self.longtitude] == Cell.EMPTY.value["value"]:
             avaliable_moves.append(("move_north",))
+
         if self.latitude - 1  >=0 and map.terrain[self.latitude -1 ,self.longtitude] == Cell.EMPTY.value["value"]:
             avaliable_moves.append(("move_south",))
+
+        if self.longtitude -1 >= 0 and map.terrain[self.latitude-1,self.longtitude] == Cell.EMPTY.value["value"]:
+            avaliable_moves.append(("move_west",))
+
+        #error here    
+        if self.longtitude + 1 < map.max_longtitude and map.terrain[self.latitude,self.longtitude + 1] == Cell.EMPTY.value["value"]:
+            avaliable_moves.append(("move_east",))
         return avaliable_moves
 
     def _get_reachable_priority_targets(self, enemies):  # how to select target

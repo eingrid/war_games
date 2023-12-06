@@ -12,7 +12,9 @@ from actor_critic_simulation.real_environment import Environment
 
 
 class QLearningTable:
-    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.2):
+    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.2, number_of_units = 1, number_of_actions = 5):
+        self.number_of_units = number_of_units
+        self.number_of_actions = number_of_actions
         self.actions = actions  # a list
         self.lr = learning_rate
         self.gamma = reward_decay
@@ -61,13 +63,17 @@ class QLearningTable:
         action = int(action)
         for ally in env.ss.allies:
             print(ally.latitude, ally.longtitude)
-        state, reward, done, status_of_game = env.step(action, number_of_units=1, number_of_actions_per_unit=5)
+        print("perform_step", self.number_of_units)
+        state, reward, done, status_of_game = env.step(action, number_of_units=self.number_of_units, number_of_actions_per_unit=self.number_of_actions)
 
         print("AFTER STEP")
         for ally in env.ss.allies:
             print(ally.latitude, ally.longtitude)
 
+        alive_allies, alive_enemies = env.ss._get_alive_units()
+        print(alive_allies, alive_enemies)
 
+        print("Status ", status_of_game)
         status = 'Proceeding'
         if status_of_game == 1:
             status = 'Victory'

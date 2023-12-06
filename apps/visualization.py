@@ -18,7 +18,7 @@ class Visualization:
 
     def redraw(self,map : Map,allies,enemies):
         terrain = map.terrain
-        img = pygame.image.load("textures/EMPTY_TEX.png")
+        img = Cell.EMPTY.value['image']# pygame.image.load("textures/EMPTY_TEX.png")
         self.screen.blit(img, (100, 100)) 
         for x in range(terrain.shape[0]):
             for y in range(terrain.shape[1]):
@@ -72,6 +72,7 @@ class Visualization:
         elif type == 'Q_learning':
             while outcome not in ("Victory","Defeat"):
                 self.ss.step += 1
+                print(self.ss.step)
                 ss,outcome = self.ss.run_q_learning_agent()
                 current_map = ss.map
 
