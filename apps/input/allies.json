@@ -4,6 +4,38 @@
             "timestamp": 0,
             "location": {
                 "longtitude": 0,
+                "latitude": 5
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "stormtrooper",
+            "object_confidence": 0.8
+        },
+
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 5,
+                "latitude": 0
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "stormtrooper",
+            "object_confidence": 0.8
+        },
+
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 6,
+                "latitude": 0
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "stormtrooper",
+            "object_confidence": 0.8
+        },
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 6,
                 "latitude": 1
             },
             "located_by": "drone1697i2bg335",
