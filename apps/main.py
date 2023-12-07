@@ -15,6 +15,9 @@ HEIGHT_CELLS = 20
 
 if __name__ == "__main__":
     ss = SimulationSession(
-    Map(terrain=np.ones(shape=(WIDTH_CELLS, HEIGHT_CELLS)),frontline_longtitude=18), allies=ALLIES, enemies=ENEMIES, simulation= MonteCarlo())
+        Map(terrain=np.zeros(shape=(WIDTH_CELLS, HEIGHT_CELLS)),frontline_longtitude=18), 
+        allies=ALLIES, 
+        enemies=ENEMIES, 
+        simulation= MonteCarlo())
     visualization = Visualization(WIDTH_CELLS*18, HEIGHT_CELLS*18, session=ss )  # Set your desired window size
     visualization.run_simulation()
