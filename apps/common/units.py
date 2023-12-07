@@ -59,8 +59,8 @@ class MilitaryUnit:
         #     np.random.rand()
         #     < DESTROYING_PROBABILITY[self.__class__][enemy_unit.__class__] * field_coeff
         # ):
-        #     enemy_unit.destroyed = True
-        return True
+            enemy_unit.destroyed = True
+            return True
         # return False
 
     def _move_north(self):
