@@ -12,8 +12,6 @@ class MilitaryUnit:
         passability: float,
         min_attack_range = None
     ) -> None:
-        if(passability < 0 or passability > 1):
-            raise ValueError('passabiity should be between 0 and 1')
         self.name = name
         self.longtitude = longtitude
         self.latitude = latitude
@@ -172,7 +170,7 @@ class Tank(ArmoredTransport):
                          longtitude, 
                          latitude,
                          altitude, 
-                         attack_range=5)
+                         attack_range=6)
 
 
 class Troops(GroundForce):
@@ -230,7 +228,7 @@ class Stormtrooper(Troops):
 
 class MLRS(Troops):
     def __init__(self, name, longtitude, latitude, altitude=0,passability=0.5) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=2)
+        super().__init__(name, longtitude, latitude, altitude, attack_range=4)
 
 
 class Artillery(GroundForce):
@@ -372,9 +370,9 @@ OBJECT_TO_CLASS_MAPPER = {
 ARTILLERY_RECHARGE_STEPS_COUNT = 4
 
 UNIT_PASSABILITY={
-    "air_force": 1,
+    "air_force": 4,
     "armored_transport": 0,
-    "troops": 0.5
+    "troops": 2
 }
 
 UNIT_FIGHTING_IMPACT={
