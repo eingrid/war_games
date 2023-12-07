@@ -46,7 +46,7 @@ troop_positions = {}
 menu_items = {
     "tank": pygame.image.load("textures/tank_modified.png"),
     "troop": pygame.image.load("textures/troop_tex.png"),
-    "tank3": pygame.image.load("textures/tank_modified.png"),
+    "artillery": pygame.image.load("textures/artillery_tex.png"),
     # Add more troop types and their corresponding images here
 }
 

@@ -1,13 +1,19 @@
 import pygame
+import pygame.freetype
+from montecarlo_simulation.montecarlo import MonteCarlo
+from utils import OUTCOMES, get_absolute_path
 from session import SimulationSession
 from common.map import Map 
 from enums import Cell, TroopImage
 
-CELL_SIZE = 36
+CELL_SIZE = 18
+SHIFT_MARGIN=5
 
 class Visualization:
     def __init__(self, width, height,session : SimulationSession):
         pygame.init()
+        self.main_game_font = pygame.freetype.Font(None, 40)
+        self.additional_game_font = pygame.freetype.Font(None, 18)
         self.ss = session
         self.width = width
         self.height = height
@@ -34,30 +40,50 @@ class Visualization:
             for troop in TroopImage:
                 
                 if troop.value["name"] in ally.name:
-                    self.screen.blit(troop.value['image'], (ally.latitude * CELL_SIZE, ally.longtitude * CELL_SIZE))
+                    self.screen.blit(troop.value['image'], (ally.longtitude * CELL_SIZE, ally.latitude * CELL_SIZE))
 
         for enemy in enemies:
             for troop in TroopImage:
                 if troop.value["name"] in enemy.name:
-                    self.screen.blit(pygame.transform.flip(troop.value['image'], True, False), (enemy.latitude * CELL_SIZE, enemy.longtitude * CELL_SIZE))
+                    self.screen.blit(pygame.transform.flip(troop.value['image'], True, False), (enemy.longtitude * CELL_SIZE, enemy.latitude * CELL_SIZE))
 
         pygame.display.flip()
 
-    def run_simulation(self, type):
+    def _dispay_outcome(self, outcome):
+        txtsurf, rect = self.main_game_font.render(outcome)
+        self.screen.blit(txtsurf, (self.width/2 - rect.width // 2, self.height/2 - rect.height // 2))
+        pygame.display.flip()
+
+    def _update_strength(self, strength, isAllies=True):
+        txtsurf, rect = self.additional_game_font.render(f'Strength: {strength:.1f}')
+        self.screen.blit(txtsurf, (SHIFT_MARGIN if isAllies else self.width-rect.width-SHIFT_MARGIN, SHIFT_MARGIN))
+
+    def run_with_visualization(self,type):
         outcome = True
 
         if type == 'MonteCarlo':
-            while outcome not in {"Victory", "Defeat"}:
-                self.ss.step += 1
-                outcome = self.ss.run_phase()
-                current_map = self.ss.map
-                alive_allies,alive_enemies = self.ss._get_alive_units()
-                self.redraw(current_map,alive_allies,alive_enemies)
+            while self.is_running:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.is_running = False
 
-                # Add a delay of 1 for visualization
-                pygame.time.wait(1000)
+                while outcome not in OUTCOMES:
+                    self.ss.step += 1
+                    outcome = self.ss.run_phase()
+                    current_map = self.ss.map
+                    alive_allies,alive_enemies = self.ss._get_alive_units()
+                    alies_strength = self.ss._get_unit_strength(alive_allies)
+                    enemies_strength = self.ss._get_unit_strength(alive_enemies)
+                    self.redraw(current_map,alive_allies,alive_enemies)
+
+                    self._update_strength(alies_strength)
+                    self._update_strength(enemies_strength,isAllies=False)
+                    pygame.display.flip()
+                    # Add a delay of 0.5s for visualization
+                    pygame.time.wait(500)
                 
-            self.ss._save_logs_to_json()
+                self._dispay_outcome(outcome)
+            self.ss._save_logs_to_json(outcome=outcome)
         elif type == 'actor_critic':
             while outcome not in ("Victory","Defeat"):
                 self.ss.step += 1
@@ -82,8 +108,29 @@ class Visualization:
                 # Add a delay of 1 for visualization
                 # pygame.time.wait(1000)
                 pygame.time.wait(300)
-            print(outcome)
+            print(outcome)        
         pygame.quit()
+
+    def run_simulation(self,n):
+        if(isinstance(self.ss.simulation, MonteCarlo)):
+            results="remaining_strength,steps,outcome"
+            print('started')
+            for i in range(1,n):
+                print(f'{i}...')
+                outcome = True
+                self.ss.reset()
+                while outcome not in OUTCOMES:
+                        self.ss.step += 1
+                        outcome = self.ss.run_phase()
+                        alive_allies,_ = self.ss._get_alive_units()
+
+                alies_strength = self.ss._get_unit_strength(alive_allies)
+                results += f'\n{alies_strength:.1f},{self.ss.step},{outcome}'
+                self.ss._save_logs_to_json(outcome=outcome)
+            # write results to csv
+            f = open(get_absolute_path(f"/montecarlo_simulation/result.csv"), "w")
+            f.write(results)
+            f.close()
 
     def simulate_and_visualize_best(self,n):
         """Run/train simulation n times and visualize best"""

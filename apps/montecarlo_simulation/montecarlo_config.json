@@ -1,6 +1,0 @@
-{
-    "actions": {
-        "no_enemy_detected": {"attack": 0, "move": 1},
-        "enemy_detected": {"attack": 0.7, "move": 0.3}
-    }
-}
