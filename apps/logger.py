@@ -6,20 +6,30 @@ class Action:
         self.unit = unit
         self.phase_number = None
 
+    def _to_dict(self):
+        raise NotImplementedError
+
 
 class Move(Action):
     def __init__(self, unit: MilitaryUnit) -> None:
         self.start = unit._get_location()
-        self.destination = None
+        self._destination = None
         super().__init__(unit)
 
-    def set_destination_location(self, *location):
-        self.destination = location
+    def set_destination_location(self, location):
+        self._destination = location
 
     def get_destination_location(self):
-        return self.destination
+        return self._destination
+    
+    def _to_dict(self):
+        return {
+            'unit': self.unit.name,
+            'start': self.start,
+            'destination': self._destination,
+        }
 
-    location = property(get_destination_location, set_destination_location)
+    destination = property(get_destination_location, set_destination_location)
 
 
 class Attack(Action):
@@ -29,3 +39,10 @@ class Attack(Action):
         self.destroyed = target_destroyed
         self.target = target
         super().__init__(unit)
+
+    def _to_dict(self):
+        return {
+            'unit': self.unit.name,
+            'destroyed': self.destroyed, 
+            'target': self.target.name
+            }

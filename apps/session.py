@@ -4,6 +4,8 @@ import random
 import numpy as np
 from utils import OUTCOMES, get_absolute_path
 from logger import Attack, Move
+from datetime import datetime
+from collections import Counter
 
 from common.map import Map
 from common.units import OBJECT_TO_CLASS_MAPPER, UNIT_FIGHTING_IMPACT, Artillery
@@ -21,7 +23,12 @@ class SimulationSession:
         self.allies = self.__init_units(allies)
         self.enemies = self.__init_units(self.__filter_units(enemies))
         self.step = 0
-        self.logs = {}
+        self.logs = {
+            'allies_starting_position': {ally.name: ally._get_location() for ally in self.allies},
+            'enemies_starting_position': {enemy.name: enemy._get_location() for enemy in self.enemies},
+            'buttle_phases': {},
+        }
+        self.reward = 0
         self.dead_allies = []
         self.dead_enemies = []
         self.__init_action_map()
@@ -80,16 +87,16 @@ class SimulationSession:
         allies.sort(key=lambda x: x.longtitude, reverse=True)
         leader_move=None
         for allies_unit in allies:
-            avaliable_actions = allies_unit.get_available_actions(allies, enemies, self.map, can_move)
-            if(len(avaliable_actions) == 0):
+            available_actions = allies_unit._get_available_actions(allies, enemies, self.map, can_move)
+            if(len(available_actions) == 0):
                 continue
             
             # select move
             # TODO: waiting for feedback regarding unit moves unification
-            if leader_move in avaliable_actions:
+            if leader_move in available_actions:
                 action = leader_move
             else:
-                action = self.simulation.select_move(avaliable_actions)
+                action = self.simulation.select_move(available_actions)
 
             if "move" in action[0]:
                 log = Move(allies_unit)
@@ -97,7 +104,7 @@ class SimulationSession:
                 allies_unit.move(action[0])
                 leader_move=action
                 self.map.update_action_map(allies_unit.latitude, allies_unit.longtitude, 1)
-                log.location = allies_unit._get_location()
+                log.destination = allies_unit._get_location()
                 log.phase_number = self.step
             elif action[0] == "attack":
                 reachable_targets = action[1]
@@ -113,7 +120,7 @@ class SimulationSession:
                 allies_unit._follow_wehicle(action[1])
             elif action[0] == 'leave_vehicle':
                 allies_unit._leave_vehicle()
-            logs.append(log)
+            logs.append(log._to_dict())
             print
         return logs
 
@@ -129,11 +136,11 @@ class SimulationSession:
     def run_phase(self):
         """Units make their moves on this step"""
         print(self.step)
-        self.logs[self.step] = {}
+        self.logs['buttle_phases'][self.step] = {}
         alive_allies, alive_enemies = self._get_alive_units()
         # alies make their move
-        allies_logs = self.__make_moves(alive_allies, alive_enemies, disable='enemies',can_move=True)
-        self.logs[self.step]['allies'] = allies_logs
+        allies_logs = self.__make_moves(alive_allies, alive_enemies, disable='enemies', can_move=True)
+        self.logs['buttle_phases'][self.step]['allies'] = allies_logs
         alive_allies, alive_enemies = self._get_alive_units()
         if(all(isinstance(unit, Artillery) for unit in alive_allies)):
             return f"Retreat"
@@ -142,8 +149,8 @@ class SimulationSession:
         
         alive_allies, alive_enemies = self._get_alive_units()
         # enemies make their move
-        enemies_logs = self.__make_moves(alive_enemies, alive_allies, disable='allies',can_move=False)
-        self.logs[self.step]['enemies'] = enemies_logs
+        enemies_logs = self.__make_moves(alive_enemies, alive_allies, disable='allies', can_move=False)
+        self.logs['buttle_phases'][self.step]['enemies'] = enemies_logs
         alive_allies, alive_enemies = self._get_alive_units()
         if len(alive_allies) == 0:
             return f"Defeat"
@@ -160,9 +167,18 @@ class SimulationSession:
         print(self.step)
         return self.logs
         
-
-    def _save_logs_to_json(self):
-        pass
+    def _save_logs_to_json(self, outcome):
+        time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        teams = '_'.join([f"{class_name.lower()}-{amount}" for class_name, amount in Counter(obj.__class__.__name__ for obj in self.enemies).items()])
+        logs = {
+            'allies_starting_position': self.logs['allies_starting_position'],
+            'enemies_starting_position': self.logs['enemies_starting_position'],
+            'buttle_phases': self.logs['buttle_phases'],
+            'score': self.reward,
+            'outcome': outcome
+            }
+        with open(get_absolute_path(f"/history_logs/{self.reward}__{time}__{teams}.json"), "w") as outfile:
+            json.dump(logs, outfile)
 
 if __name__ == '__main__':
     ss = SimulationSession(Map(frontline_longtitude=18, terrain=np.ones(shape=(20,20))), allies=ALLIES, enemies=ENEMIES, simulation= Uniform() )

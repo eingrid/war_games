@@ -81,8 +81,8 @@ class Visualization:
                 pygame.time.wait(500)
             
             self._dispay_outcome(outcome)
-            self.ss._save_logs_to_json()
-
+        self.ss._save_logs_to_json(outcome=outcome)
+        
         pygame.quit()
 
     def simulate_and_visualize_best(self,n):
