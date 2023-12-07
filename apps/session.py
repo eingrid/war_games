@@ -102,7 +102,8 @@ class SimulationSession:
                 log = Move(allies_unit)
                 self.map.clear_unit(allies_unit.latitude,allies_unit.longtitude)
                 allies_unit.move(action[0])
-                leader_move=action
+                if leader_move==None:
+                    leader_move=action
                 self.map.update_action_map(allies_unit.latitude, allies_unit.longtitude, 1)
                 log.destination = allies_unit._get_location()
                 log.phase_number = self.step

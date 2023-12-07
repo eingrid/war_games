@@ -15,7 +15,7 @@ HEIGHT_CELLS = 20
 
 if __name__ == "__main__":
     ss = SimulationSession(
-        Map(terrain=np.zeros(shape=(WIDTH_CELLS, HEIGHT_CELLS)),frontline_longtitude=18), 
+        Map(terrain=np.zeros(shape=(WIDTH_CELLS, HEIGHT_CELLS))), 
         allies=ALLIES, 
         enemies=ENEMIES, 
         simulation= MonteCarlo())

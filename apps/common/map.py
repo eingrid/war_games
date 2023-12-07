@@ -1,5 +1,6 @@
 import noise
 import numpy as np
+from common.terrain import terrain_matrix
 from enums import Cell
 
 
@@ -30,16 +31,19 @@ class Map:
         returns 2d matrix with int numbers.
         """
 
-        terrain = np.zeros((self.max_longtitude, self.max_latitude))
+        terrain = np.array(terrain_matrix)
+        return terrain
 
         # mapping between perlin noise and type of the cell
 
-        for x in range(self.max_longtitude):
-            for y in range(self.max_latitude):
-                noise_value = noise.snoise2(x / 30, y / 30, octaves=6)
-                terrain[x, y] = self._map_noise_to_cell(noise_value)
-
-        return terrain
+        # terrain = np.zeros((self.max_longtitude, self.max_latitude))
+        # for x in range(self.max_longtitude):
+        #     for y in range(self.max_latitude):
+        #         noise_value = noise.snoise2(x / 20, y / 30, octaves=6)
+        #         terrain[x, y] = self._map_noise_to_cell(noise_value)
+            
+        # print(repr(terrain))
+        # return terrain
 
     def _map_noise_to_cell(self, noise_value):
         """Map noise to type of the cell"""
