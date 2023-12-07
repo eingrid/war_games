@@ -1,5 +1,6 @@
 import pygame
 import pygame.freetype
+from montecarlo_simulation.montecarlo import MonteCarlo
 from utils import OUTCOMES, get_absolute_path
 from session import SimulationSession
 from common.map import Map 
@@ -57,7 +58,7 @@ class Visualization:
         txtsurf, rect = self.additional_game_font.render(f'Strength: {strength:.1f}')
         self.screen.blit(txtsurf, (SHIFT_MARGIN if isAllies else self.width-rect.width-SHIFT_MARGIN, SHIFT_MARGIN))
 
-    def run_simulation(self):
+    def run_with_visualization(self):
         outcome = True
         
         while self.is_running:
@@ -84,6 +85,27 @@ class Visualization:
         self.ss._save_logs_to_json(outcome=outcome)
         
         pygame.quit()
+
+    def run_simulation(self,n):
+        if(isinstance(self.ss.simulation, MonteCarlo)):
+            results="remaining_strength,steps,outcome"
+            print('started')
+            for i in range(1,n):
+                print(f'{i}...')
+                outcome = True
+                self.ss.reset()
+                while outcome not in OUTCOMES:
+                        self.ss.step += 1
+                        outcome = self.ss.run_phase()
+                        alive_allies,_ = self.ss._get_alive_units()
+
+                alies_strength = self.ss._get_unit_strength(alive_allies)
+                results += f'\n{alies_strength:.1f},{self.ss.step},{outcome}'
+                self.ss._save_logs_to_json(outcome=outcome)
+            # write results to csv
+            f = open(get_absolute_path(f"/montecarlo_simulation/result.csv"), "w")
+            f.write(results)
+            f.close()
 
     def simulate_and_visualize_best(self,n):
         """Run/train simulation n times and visualize best"""

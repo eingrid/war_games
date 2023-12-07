@@ -20,6 +20,8 @@ class SimulationSession:
         self, map: Map, allies: dict, enemies: dict, min_confidence_threshold=0.5, simulation = Uniform()) -> None:
         self.map = map
         self.min_confidence_threshold = min_confidence_threshold
+        self.initial_allies_dict = allies
+        self.initial_enemies_dict = enemies
         self.allies = self.__init_units(allies)
         self.enemies = self.__init_units(self.__filter_units(enemies))
         self.step = 0
@@ -34,6 +36,21 @@ class SimulationSession:
         self.__init_action_map()
         #class that returns next step for units 
         self.simulation = simulation
+
+    def reset(self):
+        self.map = self.map
+        self.allies = self.__init_units(self.initial_allies_dict)
+        self.enemies = self.__init_units(self.__filter_units(self.initial_enemies_dict))
+        self.step = 0
+        self.logs = {
+            'allies_starting_position': {ally.name: ally._get_location() for ally in self.allies},
+            'enemies_starting_position': {enemy.name: enemy._get_location() for enemy in self.enemies},
+            'buttle_phases': {},
+        }
+        self.reward = 0
+        self.dead_allies = []
+        self.dead_enemies = []
+        self.__init_action_map()
 
     def __filter_units(self, units):
         """Filter units with detection confidence less than min confidence threshold
@@ -136,7 +153,6 @@ class SimulationSession:
     
     def run_phase(self):
         """Units make their moves on this step"""
-        print(self.step)
         self.logs['buttle_phases'][self.step] = {}
         alive_allies, alive_enemies = self._get_alive_units()
         # alies make their move
@@ -178,7 +194,7 @@ class SimulationSession:
             'score': self.reward,
             'outcome': outcome
             }
-        with open(get_absolute_path(f"/history_logs/{self.reward}__{time}__{teams}.json"), "w") as outfile:
+        with open(get_absolute_path(f"/history_logs/{self.simulation.__class__.__name__}/{self.reward}__{time}__{teams}.json"), "w") as outfile:
             json.dump(logs, outfile)
 
 if __name__ == '__main__':
