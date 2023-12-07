@@ -4,10 +4,11 @@ folder_name = os.path.dirname(__file__)
 sys.path.append(os.path.join(folder_name, 'actor_critic_simulation'))
 print(sys.path)
 
+from montecarlo_simulation.montecarlo import MonteCarlo
+from utils import get_absolute_path
 from visualization import Visualization
 from common.map import Map
 from session import SimulationSession
-# from uniform_simulation.uniform import Uniform
 from actor_critic_simulation.actor_critic import ActorCritic
 import json
 import numpy as np
@@ -16,11 +17,10 @@ import pandas as pd
 from Q_learning.RL_brain import QLearningTable
 
 
-ALLIES = json.load(open("/run/media/eingrid/ec26c78b-20bc-47f1-b2d5-33a92d92c9b6/UCU/Intro to ds/apps/input/allies.json", "r")).get("forces")
-ENEMIES = json.load(open("/run/media/eingrid/ec26c78b-20bc-47f1-b2d5-33a92d92c9b6/UCU/Intro to ds/apps/input/enemies.json", "r")).get("forces")
-
+ALLIES = json.load(open(get_absolute_path("/input/allies.json"), "r")).get("forces")
+ENEMIES = json.load(open(get_absolute_path("/input/enemies.json"), "r")).get("forces")
 WIDTH_CELLS = 20
-HEIGHT_CELLS = 20
+HEIGHT_CELLS = 20 
 
 
 if __name__ == "__main__":
@@ -33,6 +33,9 @@ if __name__ == "__main__":
     #
     #
     ss = SimulationSession(
-    Map(terrain=np.ones(shape=(WIDTH_CELLS, HEIGHT_CELLS))), allies=ALLIES, enemies=ENEMIES, simulation=agent)
-    visualization = Visualization(36*20,36*20, session=ss)  # Set your desired window size
-    visualization.run_simulation(type='Q_learning')
+        Map(terrain=np.zeros(shape=(WIDTH_CELLS, HEIGHT_CELLS))), 
+        allies=ALLIES, 
+        enemies=ENEMIES, 
+        simulation= MonteCarlo())
+    visualization = Visualization(WIDTH_CELLS*18, HEIGHT_CELLS*18, session=ss )  # Set your desired window size
+    visualization.run_simulation(n=100,type='MonteCarlo')
