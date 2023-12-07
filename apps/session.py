@@ -2,13 +2,13 @@ import json
 import random
 
 import numpy as np
-from utils import get_absolute_path
+from utils import OUTCOMES, get_absolute_path
 from logger import Attack, Move
 from datetime import datetime
 from collections import Counter
 
 from common.map import Map
-from common.units import OBJECT_TO_CLASS_MAPPER
+from common.units import OBJECT_TO_CLASS_MAPPER, UNIT_FIGHTING_IMPACT, Artillery
 from montecarlo_simulation.montecarlo import MonteCarlo
 from uniform_simulation.uniform import Uniform
 
@@ -96,8 +96,7 @@ class SimulationSession:
             if leader_move in available_actions:
                 action = leader_move
             else:
-                generated_index = np.random.randint(0, len(available_actions))
-                action = available_actions[generated_index]
+                action = self.simulation.select_move(available_actions)
 
             if "move" in action[0]:
                 log = Move(allies_unit)
@@ -131,6 +130,9 @@ class SimulationSession:
         alive_enemies = list(filter(not_destroyed, self.enemies))
         return alive_allies, alive_enemies
 
+    def _get_unit_strength(self, units_left) -> float:
+        return sum([UNIT_FIGHTING_IMPACT[type(unit)] for unit in units_left])
+    
     def run_phase(self):
         """Units make their moves on this step"""
         print(self.step)
@@ -140,8 +142,9 @@ class SimulationSession:
         allies_logs = self.__make_moves(alive_allies, alive_enemies, disable='enemies', can_move=True)
         self.logs['buttle_phases'][self.step]['allies'] = allies_logs
         alive_allies, alive_enemies = self._get_alive_units()
+        if(all(isinstance(unit, Artillery) for unit in alive_allies)):
+            return f"Retreat"
         if len(alive_enemies) == 0:
-            print ("Victory")
             return f"Victory"
         
         alive_allies, alive_enemies = self._get_alive_units()
@@ -150,7 +153,6 @@ class SimulationSession:
         self.logs['buttle_phases'][self.step]['enemies'] = enemies_logs
         alive_allies, alive_enemies = self._get_alive_units()
         if len(alive_allies) == 0:
-            print ("Defeat")
             return f"Defeat"
         return True
 
@@ -158,7 +160,7 @@ class SimulationSession:
         """Start simulation process as a loop of phases"""
         outcome = True
         
-        while outcome not in {'Victory', 'Defeat'}:
+        while outcome not in OUTCOMES:
             self.step += 1
             outcome = self.run_phase()
         self._save_logs_to_json()
@@ -175,7 +177,7 @@ class SimulationSession:
             'score': self.reward,
             'outcome': outcome
             }
-        with open(f"history_logs/{self.reward}__{time}__{teams}.json", "w") as outfile:
+        with open(get_absolute_path(f"/history_logs/{self.reward}__{time}__{teams}.json"), "w") as outfile:
             json.dump(logs, outfile)
 
 if __name__ == '__main__':

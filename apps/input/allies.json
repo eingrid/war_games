@@ -3,11 +3,11 @@
         {
             "timestamp": 0,
             "location": {
-                "longtitude": 7,
-                "latitude": 3
+                "longtitude": 4,
+                "latitude": 9
             },
             "located_by": "drone1697i2bg335",
-            "object_name": "armored_vehicle",
+            "object_name": "tank",
             "object_confidence": 0.8
         },
         {
@@ -23,51 +23,51 @@
         {
             "timestamp": 0,
             "location": {
-                "longtitude": 7,
-                "latitude": 3
+                "longtitude": 4,
+                "latitude": 8
             },
             "located_by": "drone1697i2bg335",
-            "object_name": "stormtrooper",
+            "object_name": "tank",
             "object_confidence": 0.8
         },
         {
             "timestamp": 0,
             "location": {
-                "longtitude": 8,
-                "latitude": 3
+                "longtitude": 4,
+                "latitude": 8
             },
             "located_by": "drone1697i2bg335",
-            "object_name": "helicopter",
+            "object_name": "mlrs",
             "object_confidence": 0.8
         },
         {
             "timestamp": 0,
             "location": {
-                "longtitude": 8,
-                "latitude": 3
+                "longtitude": 3,
+                "latitude": 8
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "mlrs",
+            "object_confidence": 0.8
+        },  
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 5,
+                "latitude": 8
+            },
+            "located_by": "drone1697i2bg335",
+            "object_name": "mlrs",
+            "object_confidence": 0.8
+        },
+        {
+            "timestamp": 0,
+            "location": {
+                "longtitude": 4,
+                "latitude": 7
             },
             "located_by": "drone1697i2bg335",
             "object_name": "artillery",
-            "object_confidence": 0.8
-        },
-        {
-            "timestamp": 0,
-            "location": {
-                "longtitude": 8,
-                "latitude": 3
-            },
-            "located_by": "drone1697i2bg335",
-            "object_name": "fighter",
-            "object_confidence": 0.8
-        },
-        {
-            "timestamp": 0,
-            "location": {
-                "longtitude": 8,
-                "latitude": 3
-            },
-            "located_by": "drone1697i2bg335",
-            "object_name": "bomber",
             "object_confidence": 0.8
         }
     ]
