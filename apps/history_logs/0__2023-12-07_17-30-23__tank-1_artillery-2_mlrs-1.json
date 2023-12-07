@@ -1,0 +1,1063 @@
+{
+    "allies_starting_position": {
+        "tank958": [
+            4,
+            9
+        ],
+        "tank184": [
+            5,
+            8
+        ],
+        "tank863": [
+            4,
+            8
+        ],
+        "mlrs343": [
+            4,
+            8
+        ],
+        "mlrs866": [
+            3,
+            8
+        ],
+        "mlrs749": [
+            5,
+            8
+        ],
+        "artillery278": [
+            4,
+            7
+        ]
+    },
+    "enemies_starting_position": {
+        "tank868": [
+            16,
+            8
+        ],
+        "artillery691": [
+            17,
+            9
+        ],
+        "artillery210": [
+            15,
+            9
+        ],
+        "mlrs985": [
+            15,
+            8
+        ]
+    },
+    "buttle_phases": {
+        "1": {
+            "allies": [
+                {
+                    "unit": "tank184",
+                    "start": [
+                        5,
+                        8
+                    ],
+                    "destination": [
+                        5,
+                        7
+                    ]
+                },
+                {
+                    "unit": "mlrs749",
+                    "start": [
+                        5,
+                        8
+                    ],
+                    "destination": [
+                        5,
+                        9
+                    ]
+                },
+                {
+                    "unit": "tank958",
+                    "start": [
+                        4,
+                        9
+                    ],
+                    "destination": [
+                        4,
+                        10
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "start": [
+                        4,
+                        8
+                    ],
+                    "destination": [
+                        4,
+                        9
+                    ]
+                },
+                {
+                    "unit": "mlrs343",
+                    "start": [
+                        4,
+                        8
+                    ],
+                    "destination": [
+                        5,
+                        8
+                    ]
+                },
+                {
+                    "unit": "artillery278",
+                    "destroyed": false,
+                    "target": "tank868"
+                },
+                {
+                    "unit": "mlrs866",
+                    "start": [
+                        3,
+                        8
+                    ],
+                    "destination": [
+                        4,
+                        8
+                    ]
+                }
+            ],
+            "enemies": [
+                {
+                    "unit": "artillery691",
+                    "destroyed": false,
+                    "target": "mlrs866"
+                },
+                {
+                    "unit": "artillery210",
+                    "destroyed": false,
+                    "target": "artillery278"
+                }
+            ]
+        },
+        "2": {
+            "allies": [
+                {
+                    "unit": "tank184",
+                    "start": [
+                        5,
+                        7
+                    ],
+                    "destination": [
+                        5,
+                        6
+                    ]
+                },
+                {
+                    "unit": "mlrs343",
+                    "start": [
+                        5,
+                        8
+                    ],
+                    "destination": [
+                        5,
+                        7
+                    ]
+                },
+                {
+                    "unit": "mlrs749",
+                    "start": [
+                        5,
+                        9
+                    ],
+                    "destination": [
+                        5,
+                        8
+                    ]
+                },
+                {
+                    "unit": "tank958",
+                    "start": [
+                        4,
+                        10
+                    ],
+                    "destination": [
+                        5,
+                        10
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "start": [
+                        4,
+                        9
+                    ],
+                    "destination": [
+                        5,
+                        9
+                    ]
+                },
+                {
+                    "unit": "mlrs866",
+                    "start": [
+                        4,
+                        8
+                    ],
+                    "destination": [
+                        4,
+                        9
+                    ]
+                }
+            ],
+            "enemies": []
+        },
+        "3": {
+            "allies": [
+                {
+                    "unit": "tank958",
+                    "start": [
+                        5,
+                        10
+                    ],
+                    "destination": [
+                        5,
+                        11
+                    ]
+                },
+                {
+                    "unit": "tank184",
+                    "start": [
+                        5,
+                        6
+                    ],
+                    "destination": [
+                        5,
+                        5
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "start": [
+                        5,
+                        9
+                    ],
+                    "destination": [
+                        6,
+                        9
+                    ]
+                },
+                {
+                    "unit": "mlrs343",
+                    "start": [
+                        5,
+                        7
+                    ],
+                    "destination": [
+                        6,
+                        7
+                    ]
+                },
+                {
+                    "unit": "mlrs749",
+                    "start": [
+                        5,
+                        8
+                    ],
+                    "destination": [
+                        6,
+                        8
+                    ]
+                },
+                {
+                    "unit": "mlrs866",
+                    "start": [
+                        4,
+                        9
+                    ],
+                    "destination": [
+                        5,
+                        9
+                    ]
+                }
+            ],
+            "enemies": []
+        },
+        "4": {
+            "allies": [
+                {
+                    "unit": "tank863",
+                    "start": [
+                        6,
+                        9
+                    ],
+                    "destination": [
+                        6,
+                        10
+                    ]
+                },
+                {
+                    "unit": "mlrs343",
+                    "start": [
+                        6,
+                        7
+                    ],
+                    "destination": [
+                        7,
+                        7
+                    ]
+                },
+                {
+                    "unit": "mlrs749",
+                    "start": [
+                        6,
+                        8
+                    ],
+                    "destination": [
+                        7,
+                        8
+                    ]
+                },
+                {
+                    "unit": "tank958",
+                    "start": [
+                        5,
+                        11
+                    ],
+                    "destination": [
+                        6,
+                        11
+                    ]
+                },
+                {
+                    "unit": "tank184",
+                    "start": [
+                        5,
+                        5
+                    ],
+                    "destination": [
+                        6,
+                        5
+                    ]
+                },
+                {
+                    "unit": "mlrs866",
+                    "start": [
+                        5,
+                        9
+                    ],
+                    "destination": [
+                        6,
+                        9
+                    ]
+                }
+            ],
+            "enemies": []
+        },
+        "5": {
+            "allies": [
+                {
+                    "unit": "mlrs343",
+                    "start": [
+                        7,
+                        7
+                    ],
+                    "destination": [
+                        8,
+                        7
+                    ]
+                },
+                {
+                    "unit": "mlrs749",
+                    "start": [
+                        7,
+                        8
+                    ],
+                    "destination": [
+                        8,
+                        8
+                    ]
+                },
+                {
+                    "unit": "tank958",
+                    "start": [
+                        6,
+                        11
+                    ],
+                    "destination": [
+                        7,
+                        11
+                    ]
+                },
+                {
+                    "unit": "tank184",
+                    "start": [
+                        6,
+                        5
+                    ],
+                    "destination": [
+                        7,
+                        5
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "start": [
+                        6,
+                        10
+                    ],
+                    "destination": [
+                        7,
+                        10
+                    ]
+                },
+                {
+                    "unit": "mlrs866",
+                    "start": [
+                        6,
+                        9
+                    ],
+                    "destination": [
+                        7,
+                        9
+                    ]
+                }
+            ],
+            "enemies": []
+        },
+        "6": {
+            "allies": [
+                {
+                    "unit": "mlrs343",
+                    "start": [
+                        8,
+                        7
+                    ],
+                    "destination": [
+                        8,
+                        6
+                    ]
+                },
+                {
+                    "unit": "mlrs749",
+                    "start": [
+                        8,
+                        8
+                    ],
+                    "destination": [
+                        8,
+                        7
+                    ]
+                },
+                {
+                    "unit": "tank958",
+                    "start": [
+                        7,
+                        11
+                    ],
+                    "destination": [
+                        8,
+                        11
+                    ]
+                },
+                {
+                    "unit": "tank184",
+                    "start": [
+                        7,
+                        5
+                    ],
+                    "destination": [
+                        8,
+                        5
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "start": [
+                        7,
+                        10
+                    ],
+                    "destination": [
+                        8,
+                        10
+                    ]
+                },
+                {
+                    "unit": "mlrs866",
+                    "start": [
+                        7,
+                        9
+                    ],
+                    "destination": [
+                        8,
+                        9
+                    ]
+                },
+                {
+                    "unit": "artillery278",
+                    "destroyed": false,
+                    "target": "artillery691"
+                }
+            ],
+            "enemies": [
+                {
+                    "unit": "artillery691",
+                    "destroyed": false,
+                    "target": "tank863"
+                },
+                {
+                    "unit": "artillery210",
+                    "destroyed": false,
+                    "target": "artillery278"
+                }
+            ]
+        },
+        "7": {
+            "allies": [
+                {
+                    "unit": "tank958",
+                    "start": [
+                        8,
+                        11
+                    ],
+                    "destination": [
+                        9,
+                        11
+                    ]
+                },
+                {
+                    "unit": "tank184",
+                    "start": [
+                        8,
+                        5
+                    ],
+                    "destination": [
+                        9,
+                        5
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "start": [
+                        8,
+                        10
+                    ],
+                    "destination": [
+                        9,
+                        10
+                    ]
+                },
+                {
+                    "unit": "mlrs343",
+                    "start": [
+                        8,
+                        6
+                    ],
+                    "destination": [
+                        9,
+                        6
+                    ]
+                },
+                {
+                    "unit": "mlrs866",
+                    "start": [
+                        8,
+                        9
+                    ],
+                    "destination": [
+                        9,
+                        9
+                    ]
+                },
+                {
+                    "unit": "mlrs749",
+                    "start": [
+                        8,
+                        7
+                    ],
+                    "destination": [
+                        9,
+                        7
+                    ]
+                }
+            ],
+            "enemies": []
+        },
+        "8": {
+            "allies": [
+                {
+                    "unit": "tank958",
+                    "start": [
+                        9,
+                        11
+                    ],
+                    "destination": [
+                        10,
+                        11
+                    ]
+                },
+                {
+                    "unit": "tank184",
+                    "start": [
+                        9,
+                        5
+                    ],
+                    "destination": [
+                        10,
+                        5
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "start": [
+                        9,
+                        10
+                    ],
+                    "destination": [
+                        10,
+                        10
+                    ]
+                },
+                {
+                    "unit": "mlrs343",
+                    "start": [
+                        9,
+                        6
+                    ],
+                    "destination": [
+                        10,
+                        6
+                    ]
+                },
+                {
+                    "unit": "mlrs866",
+                    "start": [
+                        9,
+                        9
+                    ],
+                    "destination": [
+                        10,
+                        9
+                    ]
+                },
+                {
+                    "unit": "mlrs749",
+                    "start": [
+                        9,
+                        7
+                    ],
+                    "destination": [
+                        10,
+                        7
+                    ]
+                }
+            ],
+            "enemies": []
+        },
+        "9": {
+            "allies": [
+                {
+                    "unit": "tank958",
+                    "start": [
+                        10,
+                        11
+                    ],
+                    "destination": [
+                        10,
+                        12
+                    ]
+                },
+                {
+                    "unit": "tank184",
+                    "start": [
+                        10,
+                        5
+                    ],
+                    "destination": [
+                        10,
+                        4
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "start": [
+                        10,
+                        10
+                    ],
+                    "destination": [
+                        11,
+                        10
+                    ]
+                },
+                {
+                    "unit": "mlrs343",
+                    "start": [
+                        10,
+                        6
+                    ],
+                    "destination": [
+                        11,
+                        6
+                    ]
+                },
+                {
+                    "unit": "mlrs866",
+                    "start": [
+                        10,
+                        9
+                    ],
+                    "destination": [
+                        11,
+                        9
+                    ]
+                },
+                {
+                    "unit": "mlrs749",
+                    "start": [
+                        10,
+                        7
+                    ],
+                    "destination": [
+                        11,
+                        7
+                    ]
+                }
+            ],
+            "enemies": []
+        },
+        "10": {
+            "allies": [
+                {
+                    "unit": "tank863",
+                    "destroyed": true,
+                    "target": "mlrs985"
+                },
+                {
+                    "unit": "mlrs343",
+                    "start": [
+                        11,
+                        6
+                    ],
+                    "destination": [
+                        12,
+                        6
+                    ]
+                },
+                {
+                    "unit": "mlrs866",
+                    "start": [
+                        11,
+                        9
+                    ],
+                    "destination": [
+                        12,
+                        9
+                    ]
+                },
+                {
+                    "unit": "mlrs749",
+                    "start": [
+                        11,
+                        7
+                    ],
+                    "destination": [
+                        12,
+                        7
+                    ]
+                },
+                {
+                    "unit": "tank958",
+                    "start": [
+                        10,
+                        12
+                    ],
+                    "destination": [
+                        11,
+                        12
+                    ]
+                },
+                {
+                    "unit": "tank184",
+                    "start": [
+                        10,
+                        4
+                    ],
+                    "destination": [
+                        11,
+                        4
+                    ]
+                }
+            ],
+            "enemies": [
+                {
+                    "unit": "tank868",
+                    "destroyed": true,
+                    "target": "mlrs866"
+                }
+            ]
+        },
+        "11": {
+            "allies": [
+                {
+                    "unit": "mlrs343",
+                    "start": [
+                        12,
+                        6
+                    ],
+                    "destination": [
+                        12,
+                        5
+                    ]
+                },
+                {
+                    "unit": "mlrs749",
+                    "start": [
+                        12,
+                        7
+                    ],
+                    "destination": [
+                        12,
+                        6
+                    ]
+                },
+                {
+                    "unit": "tank958",
+                    "destroyed": false,
+                    "target": "artillery210"
+                },
+                {
+                    "unit": "tank184",
+                    "start": [
+                        11,
+                        4
+                    ],
+                    "destination": [
+                        11,
+                        3
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "destroyed": false,
+                    "target": "artillery210"
+                },
+                {
+                    "unit": "artillery278",
+                    "destroyed": false,
+                    "target": "artillery691"
+                }
+            ],
+            "enemies": [
+                {
+                    "unit": "artillery691",
+                    "destroyed": false,
+                    "target": "tank863"
+                },
+                {
+                    "unit": "tank868",
+                    "destroyed": true,
+                    "target": "mlrs343"
+                },
+                {
+                    "unit": "artillery210",
+                    "destroyed": false,
+                    "target": "tank863"
+                }
+            ]
+        },
+        "12": {
+            "allies": [
+                {
+                    "unit": "mlrs749",
+                    "start": [
+                        12,
+                        6
+                    ],
+                    "destination": [
+                        12,
+                        7
+                    ]
+                },
+                {
+                    "unit": "tank958",
+                    "destroyed": true,
+                    "target": "artillery210"
+                },
+                {
+                    "unit": "tank184",
+                    "start": [
+                        11,
+                        3
+                    ],
+                    "destination": [
+                        11,
+                        4
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "destroyed": true,
+                    "target": "artillery210"
+                }
+            ],
+            "enemies": [
+                {
+                    "unit": "tank868",
+                    "destroyed": true,
+                    "target": "mlrs749"
+                }
+            ]
+        },
+        "13": {
+            "allies": [
+                {
+                    "unit": "tank958",
+                    "start": [
+                        11,
+                        12
+                    ],
+                    "destination": [
+                        11,
+                        13
+                    ]
+                },
+                {
+                    "unit": "tank184",
+                    "start": [
+                        11,
+                        4
+                    ],
+                    "destination": [
+                        11,
+                        5
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "start": [
+                        11,
+                        10
+                    ],
+                    "destination": [
+                        11,
+                        11
+                    ]
+                }
+            ],
+            "enemies": []
+        },
+        "14": {
+            "allies": [
+                {
+                    "unit": "tank958",
+                    "start": [
+                        11,
+                        13
+                    ],
+                    "destination": [
+                        12,
+                        13
+                    ]
+                },
+                {
+                    "unit": "tank184",
+                    "start": [
+                        11,
+                        5
+                    ],
+                    "destination": [
+                        12,
+                        5
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "start": [
+                        11,
+                        11
+                    ],
+                    "destination": [
+                        12,
+                        11
+                    ]
+                }
+            ],
+            "enemies": [
+                {
+                    "unit": "tank868",
+                    "destroyed": true,
+                    "target": "tank184"
+                }
+            ]
+        },
+        "15": {
+            "allies": [
+                {
+                    "unit": "tank958",
+                    "start": [
+                        12,
+                        13
+                    ],
+                    "destination": [
+                        13,
+                        13
+                    ]
+                },
+                {
+                    "unit": "tank863",
+                    "destroyed": false,
+                    "target": "tank868"
+                }
+            ],
+            "enemies": [
+                {
+                    "unit": "tank868",
+                    "destroyed": true,
+                    "target": "tank863"
+                }
+            ]
+        },
+        "16": {
+            "allies": [
+                {
+                    "unit": "tank958",
+                    "start": [
+                        13,
+                        13
+                    ],
+                    "destination": [
+                        13,
+                        12
+                    ]
+                },
+                {
+                    "unit": "artillery278",
+                    "destroyed": true,
+                    "target": "tank868"
+                }
+            ],
+            "enemies": [
+                {
+                    "unit": "artillery691",
+                    "destroyed": false,
+                    "target": "tank958"
+                }
+            ]
+        },
+        "17": {
+            "allies": [
+                {
+                    "unit": "tank958",
+                    "destroyed": false,
+                    "target": "artillery691"
+                }
+            ],
+            "enemies": []
+        },
+        "18": {
+            "allies": [
+                {
+                    "unit": "tank958",
+                    "destroyed": true,
+                    "target": "artillery691"
+                }
+            ]
+        }
+    },
+    "score": 0,
+    "outcome": "Victory"
+}

@@ -1,3 +1,4 @@
+from montecarlo_simulation.montecarlo import MonteCarlo
 from utils import get_absolute_path
 from visualization import Visualization
 from common.map import Map
@@ -17,6 +18,6 @@ if __name__ == "__main__":
         Map(terrain=np.zeros(shape=(WIDTH_CELLS, HEIGHT_CELLS)),frontline_longtitude=18), 
         allies=ALLIES, 
         enemies=ENEMIES, 
-        simulation= Uniform())
+        simulation= MonteCarlo())
     visualization = Visualization(WIDTH_CELLS*18, HEIGHT_CELLS*18, session=ss )  # Set your desired window size
     visualization.run_simulation()
