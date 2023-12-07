@@ -29,7 +29,7 @@ if __name__ == '__main__':
         observation = env.reset()
         while not done:
             action = agent.choose_action(observation)
-            observation_, reward, done, ending = env.step(action,number_of_units=1,number_of_actions_per_unit=5)
+            observation_, reward, done, ending = env.step(action,number_of_units=4,number_of_actions_per_unit=5)
             reward = reward
             # print(observation[-10:-1] == observation_[-10:-1])
             agent.learn(observation, action, reward, observation_, done)

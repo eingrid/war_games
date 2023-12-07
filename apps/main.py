@@ -24,7 +24,7 @@ HEIGHT_CELLS = 20
 
 
 if __name__ == "__main__":
-    n_units = 4
+    n_units = 3
     agent = QLearningTable(actions=list(range(5**n_units)), e_greedy=1,number_of_units=n_units)
     agent.q_table = pd.read_csv("/run/media/eingrid/ec26c78b-20bc-47f1-b2d5-33a92d92c9b6/UCU/Intro to ds/apps/trained_agent.csv")
     agent.q_table = agent.q_table.set_index(agent.q_table['Unnamed: 0'])
@@ -34,5 +34,5 @@ if __name__ == "__main__":
     #
     ss = SimulationSession(
     Map(terrain=np.ones(shape=(WIDTH_CELLS, HEIGHT_CELLS))), allies=ALLIES, enemies=ENEMIES, simulation=agent)
-    visualization = Visualization(WIDTH_CELLS*18, HEIGHT_CELLS*18, session=ss)  # Set your desired window size
+    visualization = Visualization(36*20,36*20, session=ss)  # Set your desired window size
     visualization.run_simulation(type='Q_learning')

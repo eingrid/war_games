@@ -3,7 +3,7 @@ from session import SimulationSession
 from common.map import Map 
 from enums import Cell, TroopImage
 
-CELL_SIZE = 18
+CELL_SIZE = 36
 
 class Visualization:
     def __init__(self, width, height,session : SimulationSession):

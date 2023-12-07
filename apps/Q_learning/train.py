@@ -29,11 +29,16 @@ import numpy as np
 def main_loop(env, agent, epochs, number_of_units = 1, number_of_actions = 5):
     rewards = []
     endings = []
-
+    starting_lr = agent.lr
     for episode in tqdm(range(1,epochs)):
         # initial observation
         observation = env.reset()
         reward_episode = []
+        if episode % 1000:
+            if agent.lr == 0.01:
+                agent.lr == 0.1
+            else:
+                agent.lr = 0.01
         # if episode > 1250:
         #     env.epsilon = 0.6
         #     # agent.epsilon = 0.6
@@ -55,7 +60,8 @@ def main_loop(env, agent, epochs, number_of_units = 1, number_of_actions = 5):
             observation_, reward, done, ending = env.step(int(action),  number_of_units=number_of_units, number_of_actions_per_unit=number_of_actions)
             reward_episode.append(reward)
             # RL learn from this transition
-            agent.learn(str(observation), action, reward, str(observation_))
+            
+            agent.learn(str(observation), action, reward, str(observation_),done)
 
             # swap observation
             observation = observation_
@@ -83,8 +89,8 @@ def main_loop(env, agent, epochs, number_of_units = 1, number_of_actions = 5):
 if __name__ == "__main__":
     env = Environment()
     n_actions = 5
-    n_units = 4
-    RL = QLearningTable(actions=list(range(n_actions**n_units)), e_greedy=1,number_of_units=n_units,learning_rate=0.01,reward_decay=0.9)
+    n_units = 3
+    RL = QLearningTable(actions=list(range(n_actions**n_units)), e_greedy=1,number_of_units=n_units,learning_rate=0.1,reward_decay=1)
     # RL.q_table = pd.read_csv('/run/media/eingrid/ec26c78b-20bc-47f1-b2d5-33a92d92c9b6/UCU/Intro to ds/apps/trained_agent.csv')
     # RL.q_table = RL.q_table.set_index(RL.q_table['Unnamed: 0'])
     # RL.q_table.drop(columns=["Unnamed: 0"], inplace=True)

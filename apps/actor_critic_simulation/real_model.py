@@ -12,7 +12,7 @@ disable_eager_execution()
 
 class Agent(object):
     def __init__(self, alpha, beta, gamma=0.5, n_actions=5,
-                layer1_size=4096, layer2_size=2048, layer3_size = 512, layer4_size = 512, input_dims=11,n_ally_units=1):
+                layer1_size=4096, layer2_size=2048, layer3_size = 512, layer4_size = 512, input_dims=25,n_ally_units=1):
 
         self.epsilon = 0.5
         

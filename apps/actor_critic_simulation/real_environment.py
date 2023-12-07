@@ -14,6 +14,19 @@ WIDTH_CELLS = 20
 HEIGHT_CELLS = 20 
 
 
+def average_distance(points):
+    points_np = np.array(points)
+    num_points = len(points_np)
+
+    # Calculate pairwise distances using broadcasting
+    pairwise_distances = np.linalg.norm(points_np[:, None] - points_np, axis=-1)
+
+    # Exclude self-distances and calculate the average distance
+    avg_dist = np.sum(pairwise_distances) / (num_points * (num_points - 1))
+    
+    return avg_dist
+
+
 class Environment:
     def __init__(self):
         self.time = 0 
@@ -47,7 +60,7 @@ class Environment:
         for enemy in enemies:
             enemies_position_and_type.extend([enemy.latitude, enemy.longtitude,self._map_name_to_int(enemy.name),int(enemy.destroyed),-5])
         # state = np.concatenate([terrain.reshape(-1,),allies_position_and_type,enemies_position_and_type,[self.time]])
-        state = np.concatenate([allies_position_and_type,enemies_position_and_type])
+        state = np.concatenate([allies_position_and_type,enemies_position_and_type,[self.time]])
         # ####print(np.concatenate([self.unit_position, self.enemy_position]))
         return state #np.concatenate([self.unit_position, self.enemy_position])
 
@@ -67,6 +80,10 @@ class Environment:
 
         unit_index = 0
         attack = 0
+
+        alive_allies, alive_enemies = self.ss._get_alive_units()
+        unit_coords = np.array([[ally.latitude,ally.longtitude] for ally in alive_allies])
+        distance_before = average_distance(unit_coords)
         
         #iterate through actions and take action for unit
         for i in range(0, len(action), number_of_actions_per_unit):
@@ -88,11 +105,9 @@ class Environment:
                 for actions in avaliable_actions:
                     if len(actions) == 2 and actions[0] == 'attack':
                         ##print('attack possible')
-                        reward_per_action += 1000
                         possible_actions.append('attack')
                         reachable_targets = actions[1]
                         if reachable_targets is not None:
-                            print('reached')
                             reward_per_action += 1000
                         ##print(actions)
                     else:
@@ -105,7 +120,7 @@ class Environment:
                     # ##print('longtitude + 1')
                     if 'move_east' in possible_actions:
                         self.ss.allies[unit_index]._move_east()
-                        reward_per_action += 100
+                        reward_per_action += 500
                     else:
                         done = False
                         #print('wrong move')
@@ -115,7 +130,7 @@ class Environment:
                     # ##print('longtitude - 1')
                     if 'move_west' in possible_actions:
                         self.ss.allies[unit_index]._move_west()
-                        reward_per_action += 100
+                        reward_per_action += 500
                     else:
                         done = False
                         reward_per_action -= 1000
@@ -127,7 +142,7 @@ class Environment:
                         self.ss.allies[unit_index]._move_north()
                         # ###print('norrth before move', self.ss.allies[unit_index].latitude,self.ss.allies[unit_index].longtitude)
                         # ###print('norrth after move', self.ss.allies[unit_index].latitude,self.ss.allies[unit_index].longtitude)
-                        reward_per_action += 100
+                        reward_per_action += 500
                         # ###print(self.ss.map.max_latitude,self.ss.map.max_longtitude)
                     else:
                         done = False
@@ -138,7 +153,7 @@ class Environment:
                     # ##print('latitude - 1')
                     if 'move_south' in possible_actions:
                         self.ss.allies[unit_index]._move_south()
-                        reward_per_action += 100
+                        reward_per_action += 500
                     else:
                         done = False
                         #print('wrong move')
@@ -151,11 +166,11 @@ class Environment:
                         selected_target, is_target_destroyed = self.ss.allies[unit_index].attack(reachable_targets)
                         if is_target_destroyed:
                             selected_target.destroyed = True
-                            reward_per_action += 2000
+                            print('enemy killed')
+                            reward_per_action += 50000
                         else:
-                            reward_per_action += 500
+                            reward_per_action += 2000
                     else:
-                        #print('wrong attack')
                         done = False
                         reward_per_action -= 10000
                 unit_coords = np.array([self.ss.allies[unit_index].latitude,self.ss.allies[unit_index].longtitude])
@@ -167,6 +182,15 @@ class Environment:
                     reward_per_action -= 500
 
             unit_index += 1
+
+
+        alive_allies, alive_enemies = self.ss._get_alive_units()
+        unit_coords = np.array([[ally.latitude,ally.longtitude] for ally in alive_allies])
+        distance_after = average_distance(unit_coords)
+
+        #force units to move together
+        if distance_after - distance_before < 0:
+            reward_per_action += 500
 
         return reward_per_action,done
         
@@ -189,8 +213,8 @@ class Environment:
                 selected_target, is_target_destroyed = enemy.attack(reachable_targets)
                 if is_target_destroyed:
                     selected_target.destroyed = True
-                    ###print("our ally was destroyed")
-                    reward_for_enemy_move -= 5000
+                    print("our ally was destroyed")
+                    reward_for_enemy_move -= 50000
                     
         return reward_for_enemy_move
         
@@ -200,9 +224,9 @@ class Environment:
         reward = 0
         # print(number_of_units,number_of_actions_per_unit)
         # reward = -self.time
-        if self.time >= 30:
+        if self.time >= 70:
             ##print("Time finish")
-            return self.get_state(), -1_000_000, True, 0
+            return self.get_state(), -1_000_00, True, 0
         # Simulate unit movement based on the action taken
         # ###print('time reward :', reward)
         # make new action and update the session
@@ -214,7 +238,7 @@ class Environment:
         if len(alive_enemies) == 0:
             ####print("all enemies are dead")
             done = True
-            reward = reward_after_our_move + 1_000_000
+            reward = reward_after_our_move + 1_000_0000
             return self.get_state(), reward, done, +1
         
         reward_after_enemy_move = self._make_enemy_action()
@@ -268,11 +292,11 @@ class Environment:
             unit_action = action_number % num_actions
             action_vector = [0] * num_actions
             action_vector[unit_action] = 1
-            if random() > self.epsilon:
+            # if random() > self.epsilon:
                 # print('random')
-                action_vector = [0,0,0,0,0]
-                random_index = randint(0, 4)
-                action_vector[random_index] = 1
+                # action_vector = [0,0,0,0,0]
+                # random_index = randint(0, 4)
+                # action_vector[random_index] = 1
                 # print('random action', action_vector)
             actions = action_vector + actions
             action_number //= num_actions
