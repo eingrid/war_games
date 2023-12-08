@@ -8,8 +8,8 @@ import numpy as np
 from common.units import OBJECT_TO_INT_CLASS_MAPPER
 from utils import get_absolute_path
 
-ALLIES = json.load(open(get_absolute_path("/input/allies.json"), "r")).get("forces")
-ENEMIES = json.load(open(get_absolute_path("/input/enemies.json"), "r")).get("forces")
+ALLIES = json.load(open(get_absolute_path("/input/allies_q.json"), "r")).get("forces")
+ENEMIES = json.load(open(get_absolute_path("/input/enemies_q.json"), "r")).get("forces")
 
 WIDTH_CELLS = 20
 HEIGHT_CELLS = 20
@@ -41,6 +41,7 @@ class Environment:
     def from_simulation_session(cls, ss):
         environment = cls()  # Initialize an instance of Environment
         environment.ss = ss  # Assign the provided SimulationSession object to the environment's ss attribute
+        environment.epsilon = 1
         return environment
 
     def get_state(self):

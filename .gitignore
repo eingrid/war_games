@@ -127,3 +127,6 @@ dmypy.json
 *.ipynb
 **/**.h5
 **/**.png
+
+**/**.csv
+**.csv

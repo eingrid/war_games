@@ -62,7 +62,7 @@ class QLearningTable:
     def perform_step(self, ss):
         """Performs step for simulation"""
         env = Environment.from_simulation_session(ss)
-        env.time = ss.step
+        env.time = ss.step -1 
         observation = env.get_state()
         action = self.choose_action(str(observation))
         action = int(action)

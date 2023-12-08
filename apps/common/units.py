@@ -60,14 +60,14 @@ class MilitaryUnit:
         return list(DESTROYING_PROBABILITY[self.__class__].keys())
 
     def _fire(self, enemy_unit, field_coeff=1.0):
-        # if (
-        #     np.random.rand()
-        #     < DESTROYING_PROBABILITY[self.__class__][enemy_unit.__class__] * field_coeff
-        # ):
-        enemy_unit.destroyed = True
-        return True
+        if (
+            np.random.rand()
+            < DESTROYING_PROBABILITY[self.__class__][enemy_unit.__class__] * field_coeff
+        ):
+            enemy_unit.destroyed = True
+            return True
 
-    # return False
+        return False
 
     def _move_north(self):
         self.latitude += 1
@@ -80,39 +80,6 @@ class MilitaryUnit:
 
     def _move_east(self):
         self.longtitude += 1
-
-    def _get_avaliable_moves(self, map):
-        avaliable_moves = []
-        # print(self.latitude, self.longtitude)
-        if (
-            self.latitude + 1 < map.max_latitude
-            and map.terrain[self.latitude + 1, self.longtitude]
-            == Cell.EMPTY.value["value"]
-        ):
-            avaliable_moves.append(("move_north",))
-
-        if (
-            self.latitude - 1 >= 0
-            and map.terrain[self.latitude - 1, self.longtitude]
-            == Cell.EMPTY.value["value"]
-        ):
-            avaliable_moves.append(("move_south",))
-
-        if (
-            self.longtitude - 1 >= 0
-            and map.terrain[self.latitude - 1, self.longtitude]
-            == Cell.EMPTY.value["value"]
-        ):
-            avaliable_moves.append(("move_west",))
-
-        # error here
-        if (
-            self.longtitude + 1 < map.max_longtitude
-            and map.terrain[self.latitude, self.longtitude + 1]
-            == Cell.EMPTY.value["value"]
-        ):
-            avaliable_moves.append(("move_east",))
-        return avaliable_moves
 
     def _get_available_moves(self, map: Map):
         available_moves = []

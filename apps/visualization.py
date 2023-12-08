@@ -5,9 +5,13 @@ from utils import OUTCOMES, get_absolute_path
 from session import SimulationSession
 from common.map import Map
 from enums import Cell, TroopImage
+import vidmaker
+FPS = 60
+video = vidmaker.Video("vidmaker.mp4", late_export=True)
 
 CELL_SIZE = 18
 SHIFT_MARGIN = 5
+
 
 
 class Visualization:
@@ -22,6 +26,7 @@ class Visualization:
         pygame.display.set_caption("Monte Carlo Simulation Visualization")
         self.clock = pygame.time.Clock()
         self.is_running = True
+
 
     def redraw(self, map: Map, allies, enemies):
         terrain = map.terrain
@@ -56,6 +61,8 @@ class Visualization:
                     )
 
         pygame.display.flip()
+
+        video.update(pygame.surfarray.pixels3d(self.screen).swapaxes(0, 1), inverted=False)
 
     def _dispay_outcome(self, outcome):
         txtsurf, rect = self.main_game_font.render(outcome)
@@ -113,6 +120,8 @@ class Visualization:
                 # Add a delay of 1 for visualization
                 pygame.time.wait(1000)
         elif type == "q_learning":
+            # self.recorder.start_rec() # Start recording
+            
             while outcome not in ("Victory", "Defeat"):
                 self.ss.step += 1
                 print(self.ss.step)
@@ -122,9 +131,11 @@ class Visualization:
                 alive_allies, alive_enemies = ss._get_alive_units()
                 self.redraw(current_map, alive_allies, alive_enemies)
 
+                
                 # Add a delay of 1 for visualization
                 # pygame.time.wait(1000)
                 pygame.time.wait(300)
+            video.export(verbose=True)
             print(outcome)
         pygame.quit()
 

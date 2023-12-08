@@ -18,8 +18,8 @@ import sys
 
 print(sys.path)
 
-ALLIES = json.load(open(get_absolute_path("/input/allies.json"), "r")).get("forces")
-ENEMIES = json.load(open(get_absolute_path("/input/enemies.json"), "r")).get("forces")
+ALLIES = json.load(open(get_absolute_path("/input/allies_q.json"), "r")).get("forces")
+ENEMIES = json.load(open(get_absolute_path("/input/enemies_q.json"), "r")).get("forces")
 
 from common.units import OBJECT_TO_INT_CLASS_MAPPER
 

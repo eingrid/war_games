@@ -1,16 +1,3 @@
-"""
-Reinforcement learning maze example.
-
-Red rectangle:          explorer.
-Black rectangles:       hells       [reward = -1].
-Yellow bin circle:      paradise    [reward = +1].
-All other states:       ground      [reward = 0].
-
-This script is the main part which controls the update method of this example.
-The RL is in RL_brain.py.
-
-View more on my tutorial page: https://morvanzhou.github.io/tutorials/
-"""
 import sys
 import os
 from tqdm import tqdm
@@ -118,7 +105,7 @@ def main_loop(env, agent, epochs, number_of_units=1, number_of_actions=5):
 if __name__ == "__main__":
     env = Environment()
     n_actions = 5
-    n_units = 5
+    n_units = 2
     RL = QLearningTable(
         actions=list(range(n_actions**n_units)),
         e_greedy=1,
