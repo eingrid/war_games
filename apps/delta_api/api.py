@@ -44,11 +44,11 @@ class forces():
     def set_infantryCount(self, count):
         self.set_unitCount("stormtrooper", count)
 
-    def mlrsCount(self):
-        return self.unitsCount("mlrs")
+    def machinegunnerCount(self):
+        return self.unitsCount("machinegunner")
 
-    def set_mlrsCount(self, count):
-        self.set_unitCount("mlrs", count)
+    def set_machinegunnerCount(self, count):
+        self.set_unitCount("machinegunner", count)
 
 
 app = Flask("Delta")
@@ -99,11 +99,22 @@ def set_enemyInfantry():
     if 'count' in data:
         ENEMY.set_infantryCount(data['count'])
         
-        return jsonify({"message": "Count of tanks has been set"}), 200
+        return jsonify({"message": "Count of infantry has been set"}), 200
     else:
         return jsonify({"message": "No count provided"}), 400
 
-@app.route('/api/enemy/mlrsCount', methods=['GET'])
+@app.route('/api/enemy/machinegunnerCount', methods=['GET'])
 @cross_origin()
-def get_enemyMLRS():
-    return jsonify({"data": ENEMY.mlrsCount()}), 200
+def get_enemyMachinegunner():
+    return jsonify({"data": ENEMY.machinegunnerCount()}), 200
+
+@app.route('/api/enemy/machinegunnerCount', methods=['POST'])
+@cross_origin()
+def set_enemyMachinegunner():
+    data = request.get_json()
+    if 'count' in data:
+        ENEMY.set_machinegunnerCount(data['count'])
+        
+        return jsonify({"message": "Count of machinegunners has been set"}), 200
+    else:
+        return jsonify({"message": "No count provided"}), 400

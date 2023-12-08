@@ -42,10 +42,10 @@
     </div>
 
     <div class="counter">
-        <h2>MLRS</h2>
-        <div id="mlrsCount">Loading...</div>
-        <button onclick="changeCount(-1, '3')">-</button>
-        <button onclick="changeCount(1, '3')">+</button>
+        <h2>Machinegunner</h2>
+        <div id="machinegunnerCount">Loading...</div>
+        <button onclick="changeCount(-1, 'machinegunnerCount')">-</button>
+        <button onclick="changeCount(1, 'machinegunnerCount')">+</button>
     </div>
 
     <script>
@@ -95,7 +95,7 @@
         // Initial fetch of the count when the page loads
         getCount('tanksCount');
         getCount('infantryCount');
-        getCount('mlrsCount');
+        getCount('machinegunnerCount');
     </script>
 </body>
 </html>

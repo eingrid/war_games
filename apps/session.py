@@ -25,6 +25,7 @@ class SimulationSession:
         self.initial_allies_dict = allies
         self.initial_enemies_dict = enemies
         self.allies = self.__init_units(allies)
+        print(f'initial strength: {self._get_unit_strength(self.allies)}')
         self.enemies = self.__init_units(self.__filter_units(enemies))
         self.step = 0
         self.logs = {
@@ -188,16 +189,17 @@ class SimulationSession:
         
     def _save_logs_to_json(self, outcome):
     
-        time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        teams = '_'.join([f"{class_name.lower()}-{amount}" for class_name, amount in Counter(obj.__class__.__name__ for obj in self.enemies).items()])
+        time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S.%f")
+        # teams = '_'.join([f"{class_name.lower()}-{amount}" for class_name, amount in Counter(obj.__class__.__name__ for obj in self.enemies).items()])
         logs = {
             'allies_starting_position': self.logs['allies_starting_position'],
             'enemies_starting_position': self.logs['enemies_starting_position'],
             'buttle_phases': self.logs['buttle_phases'],
             'score': self.reward,
-            'outcome': outcome
+            'outcome': outcome,
+            'steps': self.step
             }
-        file_path = get_absolute_path(f"/history_logs/{self.simulation.__class__.__name__}/{self.reward}__{time}__{teams}.json")
+        file_path = get_absolute_path(f"/history_logs/{self.simulation.__class__.__name__}/{outcome}_{self.reward:.1f}_{self.step}_{time}.json")
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, "w") as outfile:
             json.dump(logs, outfile)

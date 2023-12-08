@@ -61,7 +61,7 @@ class DeltaLocal(DeltaAPI):
         pass
 
     def fetch_json(self, name):        
-        data = json.load(open(utils.get_absolute_path(f"/input/{name}.json"), "r"))
+        data = json.load(open(utils.get_absolute_path(f"/input/{name}_q2.json"), "r"))
         return data 
 
 class DeltaRemote(DeltaAPI):
@@ -75,7 +75,7 @@ class DeltaRemote(DeltaAPI):
         return data
     
 def api():
-    return DeltaLocal()
+    return DeltaRemote()
 
 def allies():
     return api().fetch_json("allies").get("forces")
