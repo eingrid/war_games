@@ -1,16 +1,20 @@
+
 import os
 import sys
 
 folder_name = os.path.dirname(__file__)
 sys.path.append(os.path.join(folder_name, "actor_critic_simulation"))
-print(sys.path)
+
+
 
 from montecarlo_simulation.montecarlo import MonteCarlo
 from utils import get_absolute_path
 from visualization import Visualization
 from common.map import Map
 from session import SimulationSession
+
 from actor_critic_simulation.actor_critic import ActorCritic
+
 import json
 import numpy as np
 import pandas as pd
@@ -20,7 +24,8 @@ from Q_learning.RL_brain import QLearningTable
 ALLIES = json.load(open(get_absolute_path("/input/allies.json"), "r")).get("forces")
 ENEMIES = json.load(open(get_absolute_path("/input/enemies.json"), "r")).get("forces")
 WIDTH_CELLS = 20
-HEIGHT_CELLS = 20
+HEIGHT_CELLS = 20 
+
 
 
 if __name__ == "__main__":
