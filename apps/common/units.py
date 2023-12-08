@@ -62,14 +62,14 @@ class MilitaryUnit:
         return list(DESTROYING_PROBABILITY[self.__class__].keys())
 
     def _fire(self, enemy_unit, field_coeff=1.0):
-        # if (
-        #     np.random.rand()
-        #     < DESTROYING_PROBABILITY[self.__class__][enemy_unit.__class__] * field_coeff
-        # ):
-        enemy_unit.destroyed = True
-        return True
+        if (
+            np.random.rand()
+            < DESTROYING_PROBABILITY[self.__class__][enemy_unit.__class__] * field_coeff
+        ):
+            enemy_unit.destroyed = True
+            return True
 
-    # return False
+        return False
 
     def _move_north(self):
         self.latitude += 1
@@ -285,7 +285,7 @@ class Troops(GroundForce):
         attacks = super()._get_available_attacks(enemies)
         if attacks:
             available_moves.append(attacks)
-                                                   self._get_location() == unit._get_location(),
+            self._get_location() == unit._get_location(),
 
         elif (can_move):
             available_moves.extend(self._get_available_moves(map))

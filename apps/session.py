@@ -161,6 +161,7 @@ class SimulationSession:
                 )
                 log = Attack(allies_unit, selected_target, is_target_destroyed)
                 log.phase_number = self.step
+                if is_target_destroyed:
 
                     self.map.clear_unit(selected_target.latitude, selected_target.longtitude)
                     self.__getattribute__(f"dead_{disable}").append(selected_target)
