@@ -21,12 +21,12 @@ class Move(Action):
 
     def get_destination_location(self):
         return self._destination
-    
+
     def _to_dict(self):
         return {
-            'unit': self.unit.name,
-            'start': self.start,
-            'destination': self._destination,
+            "unit": self.unit.name,
+            "start": self.start,
+            "destination": self._destination,
         }
 
     destination = property(get_destination_location, set_destination_location)
@@ -42,7 +42,7 @@ class Attack(Action):
 
     def _to_dict(self):
         return {
-            'unit': self.unit.name,
-            'destroyed': self.destroyed, 
-            'target': self.target.name
-            }
+            "unit": self.unit.name,
+            "destroyed": self.destroyed,
+            "target": self.target.name,
+        }

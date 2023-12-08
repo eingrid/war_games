@@ -1,10 +1,3 @@
-"""
-This part of code is the Q learning brain, which is a brain of the agent.
-All decisions are made in here.
-
-View more on my tutorial page: https://morvanzhou.github.io/tutorials/
-"""
-
 import numpy as np
 import pandas as pd
 
@@ -12,7 +5,15 @@ from actor_critic_simulation.real_environment import Environment
 
 
 class QLearningTable:
-    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.8, number_of_units = 1, number_of_actions = 5):
+    def __init__(
+        self,
+        actions,
+        learning_rate=0.01,
+        reward_decay=0.9,
+        e_greedy=0.8,
+        number_of_units=1,
+        number_of_actions=5,
+    ):
         self.number_of_units = number_of_units
         self.number_of_actions = number_of_actions
         self.actions = actions  # a list
@@ -28,7 +29,9 @@ class QLearningTable:
             # choose best action
             state_action = self.q_table.loc[observation, :]
             # some actions may have the same value, randomly choose on in these actions
-            action = np.random.choice(state_action[state_action == np.max(state_action)].index)
+            action = np.random.choice(
+                state_action[state_action == np.max(state_action)].index
+            )
         else:
             # choose random action
             action = np.random.choice(self.actions)
@@ -38,8 +41,10 @@ class QLearningTable:
         self.check_state_exist(s_)
         q_predict = self.q_table.loc[s, a]
         if not done:
-            q_target = r + self.gamma * self.q_table.loc[s_, :].max()  # next state is not terminal
-        else:   
+            q_target = (
+                r + self.gamma * self.q_table.loc[s_, :].max()
+            )  # next state is not terminal
+        else:
             q_target = r  # next state is terminal
         self.q_table.loc[s, a] += self.lr * (q_target - q_predict)  # update
 
@@ -48,7 +53,7 @@ class QLearningTable:
             # append new state to q table
             self.q_table = self.q_table.append(
                 pd.Series(
-                    [0]*len(self.actions),
+                    [0] * len(self.actions),
                     index=self.q_table.columns,
                     name=state,
                 )
@@ -64,7 +69,11 @@ class QLearningTable:
         for ally in env.ss.allies:
             print(ally.latitude, ally.longtitude)
         print("perform_step", self.number_of_units)
-        state, reward, done, status_of_game = env.step(action, number_of_units=self.number_of_units, number_of_actions_per_unit=self.number_of_actions)
+        state, reward, done, status_of_game = env.step(
+            action,
+            number_of_units=self.number_of_units,
+            number_of_actions_per_unit=self.number_of_actions,
+        )
 
         print("AFTER STEP")
         for ally in env.ss.allies:
@@ -74,9 +83,9 @@ class QLearningTable:
         print(alive_allies, alive_enemies)
 
         print("Status ", status_of_game)
-        status = 'Proceeding'
+        status = "Proceeding"
         if status_of_game == 1:
-            status = 'Victory'
+            status = "Victory"
         elif status_of_game == -1:
-            status = 'Defeat'
+            status = "Defeat"
         return env.ss, status
