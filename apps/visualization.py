@@ -86,7 +86,7 @@ class Visualization:
         
         pygame.quit()
 
-    def run_simulation(self,n):
+    def run_simulation(self,n, mode):
         if(isinstance(self.ss.simulation, MonteCarlo)):
             results="remaining_strength,steps,outcome"
             print('started')
@@ -100,10 +100,11 @@ class Visualization:
                         alive_allies,_ = self.ss._get_alive_units()
 
                 alies_strength = self.ss._get_unit_strength(alive_allies)
+                self.ss.reward = alies_strength
                 results += f'\n{alies_strength:.1f},{self.ss.step},{outcome}'
                 self.ss._save_logs_to_json(outcome=outcome)
             # write results to csv
-            f = open(get_absolute_path(f"/montecarlo_simulation/result.csv"), "w")
+            f = open(get_absolute_path(f"/montecarlo_simulation/result_{mode}.csv"), "w")
             f.write(results)
             f.close()
 

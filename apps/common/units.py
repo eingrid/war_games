@@ -226,7 +226,7 @@ class Stormtrooper(Troops):
         super().__init__(name, longtitude, latitude, altitude, attack_range=3)
 
 
-class MLRS(Troops):
+class Machinegunner(Troops):
     def __init__(self, name, longtitude, latitude, altitude=0,passability=0.5) -> None:
         super().__init__(name, longtitude, latitude, altitude, attack_range=4)
 
@@ -360,7 +360,7 @@ OBJECT_TO_CLASS_MAPPER = {
     "bomber": Bomber,
     "fighter": Fighter,
     "artillery": Artillery,
-    "mlrs": MLRS,
+    "machinegunner": Machinegunner,
     "stormtrooper": Stormtrooper,
     "tank": Tank,
     "armored_vehicle": ArmoredPersonnelCarriers,
@@ -377,7 +377,7 @@ UNIT_PASSABILITY={
 
 UNIT_FIGHTING_IMPACT={
     Artillery: 0.8,
-    MLRS: 0.6,
+    Machinegunner: 0.6,
     Stormtrooper: 0.5,
     Tank: 0.8,
 }
@@ -386,13 +386,13 @@ DESTROYING_PROBABILITY = {
     Drone: {
         Tank: 0.0, 
         ArmoredPersonnelCarriers: 0.0, 
-        MLRS: 0.0, 
+        Machinegunner: 0.0, 
         Stormtrooper: 0.0
     },
     Helicopter: {
         Tank: 0.7,
         ArmoredPersonnelCarriers: 0.8,
-        MLRS: 0.9,
+        Machinegunner: 0.9,
         Stormtrooper: 0.9,
         Artillery: 0.5,
     },
@@ -404,36 +404,36 @@ DESTROYING_PROBABILITY = {
     Bomber: {
         Tank: 0.9,
         ArmoredPersonnelCarriers: 0.9,
-        MLRS: 1.0,
+        Machinegunner: 1.0,
         Stormtrooper: 1.0,
         Artillery: 0.9,
     },
     Artillery: {
         Tank: 0.1,
         ArmoredPersonnelCarriers: 0.1,
-        MLRS: 0.2,
+        Machinegunner: 0.2,
         Stormtrooper: 0.2,
         Artillery: 0.1,
     },
-    MLRS: {
+    Machinegunner: {
         Tank: 0.5,
         Artillery: 0.2,
         ArmoredPersonnelCarriers: 0.5,
     },
     Stormtrooper: {
-        MLRS: 0.5,
+        Machinegunner: 0.5,
         Stormtrooper: 0.5,
     },
     Tank: {
         Tank: 0.5,
         ArmoredPersonnelCarriers: 0.5,
-        MLRS: 0.5,
+        Machinegunner: 0.5,
         Stormtrooper: 0.5,
         Artillery: 0.5,
     },
     ArmoredPersonnelCarriers: {
         ArmoredPersonnelCarriers: 0.3,
-        MLRS: 0.6,
+        Machinegunner: 0.6,
         Stormtrooper: 0.6,
     },
 }
