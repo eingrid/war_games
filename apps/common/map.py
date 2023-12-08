@@ -12,7 +12,8 @@ class Field:
         return VULNERABILITY_MAPPER[self.vulnerability]
 
 class Map:
-    def __init__(self, frontline_longtitude=None, terrain: np.array = None) -> None:
+
+    def __init__(self, frontline_longtitude = None, terrain: np.array = None) -> None:
         """Map object that is created using perlin noise"""
         self.max_longtitude, self.max_latitude = terrain.shape
         # self.terrain = self.__convert_to_np_map(terrain)
@@ -23,11 +24,8 @@ class Map:
         }
         self.terrain = self._generate_map_using_perlin_noise()
         self.action_map = np.zeros(terrain.shape)
-        self.frontline_longtitude = (
-            frontline_longtitude
-            if frontline_longtitude is not None
-            else self.max_longtitude
-        )
+
+        self.frontline_longtitude = frontline_longtitude if frontline_longtitude is not None else self.max_longtitude
 
 
     def _generate_map_using_perlin_noise(self) -> np.array:
@@ -92,6 +90,7 @@ class Map:
 
     def _is_in_range(self, latitude, longitutte):
         return (latitude < (self.max_latitude)) & (longitutte < (self.max_longtitude))
+
 
 
 VULNERABILITY_MAPPER = {1: 0.8, 2: 0.7, 3: 0.2}

@@ -1,10 +1,10 @@
 
+
 import os
 import sys
 
 folder_name = os.path.dirname(__file__)
 sys.path.append(os.path.join(folder_name, "actor_critic_simulation"))
-
 
 
 from montecarlo_simulation.montecarlo import MonteCarlo
@@ -20,6 +20,12 @@ import numpy as np
 import pandas as pd
 
 from Q_learning.RL_brain import QLearningTable
+
+ALLIES = json.load(open(get_absolute_path("/input/allies.json"), "r")).get("forces")
+ENEMIES = json.load(open(get_absolute_path("/input/enemies.json"), "r")).get("forces")
+WIDTH_CELLS = 20
+HEIGHT_CELLS = 20 
+
 
 ALLIES = json.load(open(get_absolute_path("/input/allies.json"), "r")).get("forces")
 ENEMIES = json.load(open(get_absolute_path("/input/enemies.json"), "r")).get("forces")
@@ -49,3 +55,4 @@ if __name__ == "__main__":
         WIDTH_CELLS * 18, HEIGHT_CELLS * 18, session=ss
     )  # Set your desired window size
     visualization.run_with_visualization(type="q_learning")
+

@@ -12,7 +12,7 @@ class MilitaryUnit:
         altitude: int,
         attack_range: int,
         passability: float,
-        min_attack_range=None,
+        min_attack_range = None
     ) -> None:
         self.name = name
         self.longtitude = longtitude
@@ -22,7 +22,6 @@ class MilitaryUnit:
         self.destroyed = False
         self.passability = passability   
         self.min_attack_range = min_attack_range if min_attack_range is not None else 0
-
 
     def __set_name__(self, name):
         self.name = "_" + name
@@ -47,7 +46,6 @@ class MilitaryUnit:
             (self.longtitude - unit.longtitude) ** 2
             + (self.latitude - unit.latitude) ** 2
             + (self.altitude - unit.altitude) ** 2
-
         ) ** 0.5
 
     def _scan_range(self, enemies):
@@ -82,6 +80,7 @@ class MilitaryUnit:
 
     def _move_east(self):
         self.longtitude += 1
+
 
 #     def _get_avaliable_moves(self, map):
 #         avaliable_moves = []
@@ -134,34 +133,6 @@ class MilitaryUnit:
         return ('attack', reachable_priority_targets) if len(reachable_priority_targets) > 0 else None
         
 
-
-    def _get_available_moves(self, map: Map):
-        available_moves = []
-        if (self.longtitude < (map.frontline_longtitude - 1)) and map.can_move_to_point(
-            self.latitude, self.longtitude + 1, self.passability
-        ):
-            available_moves.append(("move_east",))
-        if (self.latitude < (map.max_latitude - 1)) and map.can_move_to_point(
-            self.latitude + 1, self.longtitude, self.passability
-        ):
-            available_moves.append(("move_north",))
-        if (self.latitude > 0) and map.can_move_to_point(
-            self.latitude - 1, self.longtitude, self.passability
-        ):
-            available_moves.append(("move_south",))
-        # Allow to move back if there is no other option
-        if len(available_moves) == 0 and (self.longtitude != 0):
-            available_moves.append(("move_west",))
-        return available_moves
-
-    def _get_available_attacks(self, enemies):
-        reachable_priority_targets = self._get_reachable_priority_targets(enemies)
-        return (
-            ("attack", reachable_priority_targets)
-            if len(reachable_priority_targets) > 0
-            else None
-        )
-
     def _get_reachable_priority_targets(self, enemies):  # how to select target
         targets_in_range = self._scan_range(enemies)
         return list(
@@ -177,17 +148,6 @@ class MilitaryUnit:
         if attacks:
             available_moves.append(attacks)
         #moves
-        elif can_move:
-            available_moves.extend(self._get_available_moves(map))
-        return available_moves
-
-    def _get_available_actions(self, allies, enemies, map, can_move):
-        available_moves = []
-        # attack
-        attacks = self._get_available_attacks(enemies)
-        if attacks:
-            available_moves.append(attacks)
-        # moves
         elif can_move:
             available_moves.extend(self._get_available_moves(map))
         return available_moves
@@ -210,7 +170,6 @@ class GroundForce(MilitaryUnit):
         altitude: int,
         attack_range: int,
         passability: float,
-
         min_attack_range = None
     ) -> None:
         # self.permeability = 1.0
@@ -229,7 +188,6 @@ class ArmoredTransport(GroundForce):
         self.troops_slot = None
         super().__init__(name, longtitude, latitude, altitude, attack_range,UNIT_PASSABILITY["armored_transport"])
 
-
     def move(self, func):
         move_func = self.__getattribute__(f"_{func}")
         move_func()
@@ -244,7 +202,11 @@ class ArmoredPersonnelCarriers(ArmoredTransport):
 
 class Tank(ArmoredTransport):
     def __init__(self, name: str, longtitude: int, latitude: int, altitude=0) -> None:
-        super().__init__(name, longtitude, latitude, altitude, attack_range=6)
+        super().__init__(name, 
+                         longtitude, 
+                         latitude,
+                         altitude, 
+                         attack_range=6)
 
 
 class Troops(GroundForce):
@@ -257,7 +219,6 @@ class Troops(GroundForce):
         attack_range: int,
     ) -> None:
         self.covered_by_vehicle = None
-
         super().__init__(
             name,
             longtitude,
@@ -278,7 +239,7 @@ class Troops(GroundForce):
 
     def _is_covered_by_vehicle(self):
         return self.covered_by_vehicle is None
-
+      
     def _get_available_actions(self, allies, enemies, map, can_move):
         available_moves = []
         # attack
@@ -311,14 +272,12 @@ class Stormtrooper(Troops):
 
 
 class MLRS(Troops):
-
     def __init__(self, name, longtitude, latitude, altitude=0,passability=0.5) -> None:
         super().__init__(name, longtitude, latitude, altitude, attack_range=4)
 
 
 class Artillery(GroundForce):
     def __init__(self, name, longtitude, latitude, altitude=0) -> None:
-
         super().__init__(name, 
                          longtitude, 
                          latitude, 
@@ -327,15 +286,16 @@ class Artillery(GroundForce):
                          passability=UNIT_PASSABILITY["armored_transport"],
                          min_attack_range=10)
         self.steps_from_last_shot=ARTILLERY_RECHARGE_STEPS_COUNT
-        
 
     def _get_available_actions(self, allies, enemies, map, can_move):
         avaliable_moves = []
 
-
+        # recharge
         if(self.steps_from_last_shot < ARTILLERY_RECHARGE_STEPS_COUNT):
             self.steps_from_last_shot += 1
             return avaliable_moves
+        
+
         # attack
         reachable_priority_targets = self._get_reachable_priority_targets(enemies)
         if len(reachable_priority_targets) > 0:
@@ -364,7 +324,6 @@ class AirForce(MilitaryUnit):
         self.steps_to_airport = 0
 
         super().__init__(name, longtitude, latitude, altitude, attack_range, UNIT_PASSABILITY["air_force"])
-
 
     def _move_up(self):
         self.altitude += self.delta_altitude
@@ -427,7 +386,6 @@ class Helicopter(AirForce):
             min_altitude=1,
             max_altitude=30,
             delta_altitude=5
-
         )
 
 
@@ -461,10 +419,13 @@ OBJECT_TO_CLASS_MAPPER = {
 ARTILLERY_RECHARGE_STEPS_COUNT = 4
 
 
-UNIT_PASSABILITY = {"air_force": 4, "armored_transport": 0, "troops": 2}
+UNIT_PASSABILITY={
+    "air_force": 4,
+    "armored_transport": 0,
+    "troops": 2
+}
 
-UNIT_FIGHTING_IMPACT = {
-
+UNIT_FIGHTING_IMPACT={
     Artillery: 0.8,
     MLRS: 0.6,
     Stormtrooper: 0.5,
@@ -485,7 +446,11 @@ DESTROYING_PROBABILITY = {
         Stormtrooper: 0.9,
         Artillery: 0.5,
     },
-    Fighter: {Bomber: 0.8, Fighter: 0.4, Drone: 0.6},
+    Fighter: {
+        Bomber: 0.8, 
+        Fighter: 0.4, 
+        Drone: 0.6
+    },
     Bomber: {
         Tank: 0.9,
         ArmoredPersonnelCarriers: 0.9,

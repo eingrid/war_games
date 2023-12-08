@@ -12,8 +12,6 @@ from common.map import Map
 from common.units import OBJECT_TO_CLASS_MAPPER, UNIT_FIGHTING_IMPACT, Artillery
 from montecarlo_simulation.montecarlo import MonteCarlo
 from uniform_simulation.uniform import Uniform
-
-
 import sys
 
 
@@ -22,6 +20,7 @@ ALLIES = json.load(open(get_absolute_path("/input/allies.json"), "r")).get("forc
 ENEMIES = json.load(open(get_absolute_path("/input/enemies.json"), "r")).get("forces")
 
 from common.units import OBJECT_TO_INT_CLASS_MAPPER
+
 
 class SimulationSession:
     def __init__(
@@ -40,14 +39,9 @@ class SimulationSession:
         self.enemies = self.__init_units(self.__filter_units(enemies))
         self.step = 0
         self.logs = {
-
-            "allies_starting_position": {
-                ally.name: ally._get_location() for ally in self.allies
-            },
-            "enemies_starting_position": {
-                enemy.name: enemy._get_location() for enemy in self.enemies
-            },
-            "buttle_phases": {},
+            'allies_starting_position': {ally.name: ally._get_location() for ally in self.allies},
+            'enemies_starting_position': {enemy.name: enemy._get_location() for enemy in self.enemies},
+            'buttle_phases': {},
 
         }
         self.reward = 0
@@ -55,8 +49,7 @@ class SimulationSession:
         self.dead_enemies = []
         self.__init_action_map()
 
-        # class that returns next step for units
-
+        #class that returns next step for units 
         self.simulation = simulation
 
     def reset(self):
@@ -65,15 +58,9 @@ class SimulationSession:
         self.enemies = self.__init_units(self.__filter_units(self.initial_enemies_dict))
         self.step = 0
         self.logs = {
-
-            "allies_starting_position": {
-                ally.name: ally._get_location() for ally in self.allies
-            },
-            "enemies_starting_position": {
-                enemy.name: enemy._get_location() for enemy in self.enemies
-            },
-            "buttle_phases": {},
-
+            'allies_starting_position': {ally.name: ally._get_location() for ally in self.allies},
+            'enemies_starting_position': {enemy.name: enemy._get_location() for enemy in self.enemies},
+            'buttle_phases': {},
         }
         self.reward = 0
         self.dead_allies = []
@@ -119,9 +106,8 @@ class SimulationSession:
                 ),
                 zip(units, random_ids),
             )
-        )
-
-
+        )    
+    
     def __init_action_map(self):
         for allies_unit in self.allies:
             self.map.update_action_map(allies_unit.latitude, allies_unit.longtitude, 1)
@@ -232,6 +218,7 @@ class SimulationSession:
         return self.logs
         
     def _save_logs_to_json(self, outcome):
+
         time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         teams = '_'.join([f"{class_name.lower()}-{amount}" for class_name, amount in Counter(obj.__class__.__name__ for obj in self.enemies).items()])
         logs = {

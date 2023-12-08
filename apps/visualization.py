@@ -10,6 +10,7 @@ CELL_SIZE = 18
 SHIFT_MARGIN = 5
 
 
+
 class Visualization:
     def __init__(self, width, height, session: SimulationSession):
         pygame.init()
@@ -28,6 +29,7 @@ class Visualization:
 
         img = Cell.EMPTY.value["image"] 
         self.screen.blit(img, (100, 100))
+
 
         for x in range(terrain.shape[0]):
             for y in range(terrain.shape[1]):
@@ -48,6 +50,7 @@ class Visualization:
                         troop.value["image"],
                         (ally.longtitude * CELL_SIZE, ally.latitude * CELL_SIZE),
                     )
+
 
 
         for enemy in enemies:
@@ -147,13 +150,14 @@ class Visualization:
 
                 alies_strength = self.ss._get_unit_strength(alive_allies)
                 results += f"\n{alies_strength:.1f},{self.ss.step},{outcome}"
+
                 self.ss._save_logs_to_json(outcome=outcome)
             # write results to csv
             f = open(get_absolute_path(f"/montecarlo_simulation/result.csv"), "w")
             f.write(results)
             f.close()
 
-    def simulate_and_visualize_best(self, n):
 
+    def simulate_and_visualize_best(self,n):
         """Run/train simulation n times and visualize best"""
         return NotImplementedError()

@@ -5,6 +5,7 @@ from utils import get_absolute_path
 
 
 
+
 class Cell(Enum):
     EMPTY = {
         "name": "Empty Cell",
@@ -21,7 +22,6 @@ class Cell(Enum):
         "image": pygame.image.load(get_absolute_path("/textures/HILL_TEX.png")),
         "value": 2,
     }
-
     MOUNTAIN = {
         "name": "Cell With Mountain",
         "image": pygame.image.load(get_absolute_path("/textures/TEX_MOUNTAIN.png")),
@@ -46,3 +46,4 @@ class TroopImage(Enum):
         "name": "artillery",
         "image": pygame.image.load(get_absolute_path("/textures/artillery_tex.png")),
     }
+

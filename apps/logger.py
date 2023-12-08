@@ -42,8 +42,7 @@ class Attack(Action):
 
     def _to_dict(self):
         return {
-            "unit": self.unit.name,
-            "destroyed": self.destroyed,
-            "target": self.target.name,
-        }
-
+            'unit': self.unit.name,
+            'destroyed': self.destroyed, 
+            'target': self.target.name
+            }
