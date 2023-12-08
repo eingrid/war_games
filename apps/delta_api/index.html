@@ -25,53 +25,77 @@
     </style>
 </head>
 <body>
-    <h1>Count Up/Down Web App</h1>
+    <h1>Delta API</h1>
 
-    <div id="count">Loading...</div>
+    <div class="counter">
+        <h2>Infantry</h2>
+        <div id="infantryCount">Loading...</div>
+        <button onclick="changeCount(1, 'infantryCount')">-</button>
+        <button onclick="changeCount(1, 'infantryCount')">+</button>
+    </div>
 
-    <button onclick="changeCount(-1)">-</button>
-    <button onclick="changeCount(1)">+</button>
+    <div class="counter">
+        <h2>Tanks</h2>
+        <div id="tanksCount">Loading...</div>
+        <button onclick="changeCount(-1, 'tanksCount')">-</button>
+        <button onclick="changeCount(1, 'tanksCount')">+</button>
+    </div>
+
+    <div class="counter">
+        <h2>MLRS</h2>
+        <div id="mlrsCount">Loading...</div>
+        <button onclick="changeCount(-1, '3')">-</button>
+        <button onclick="changeCount(1, '3')">+</button>
+    </div>
 
     <script>
         // Replace 'YOUR_API_ENDPOINT' with the actual endpoint of your web service
-        const apiEndpoint = 'YOUR_API_ENDPOINT';
+        const apiEndpoint = 'http://localhost:5000/api/enemy';
 
         // Function to fetch the current count from the web service
-        async function getCount() {
+        async function getCount(counterId) {
             try {
-                const response = await fetch(apiEndpoint);
+                const response = await fetch(`${apiEndpoint}/${counterId}`);
                 const data = await response.json();
-                document.getElementById('count').textContent = `Count: ${data.count}`;
+                document.getElementById(counterId).textContent = `Count: ${data.data}`;
             } catch (error) {
-                console.error('Error fetching count:', error);
+                console.error(`Error fetching count ${counterId}:`, error);
             }
         }
 
         // Function to update the count on the web service
-        async function updateCount(change) {
+        async function updateCount(change, counterId) {
             try {
-                const response = await fetch(apiEndpoint, {
+                const currentCountResponse = await fetch(`${apiEndpoint}/${counterId}`);
+                const currentCountData = await currentCountResponse.json();
+                const currentCount = currentCountData.data;
+
+                const updatedCount = currentCount + change;
+
+                const response = await fetch(`${apiEndpoint}/${counterId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ change }),
+                    body: JSON.stringify({ 'count' :updatedCount }),
                 });
 
                 // Update the displayed count after a successful update
-                getCount();
+                getCount(counterId);
             } catch (error) {
-                console.error('Error updating count:', error);
+                console.error(`Error updating count ${counterId}:`, error);
             }
         }
 
         // Function to change the count based on the button clicked
-        function changeCount(change) {
-            updateCount(change);
+        function changeCount(change, counterId) {
+            updateCount(change, counterId);
         }
 
         // Initial fetch of the count when the page loads
-        getCount();
+        getCount('tanksCount');
+        getCount('infantryCount');
+        getCount('mlrsCount');
     </script>
 </body>
 </html>
