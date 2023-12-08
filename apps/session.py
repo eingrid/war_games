@@ -16,13 +16,12 @@ from uniform_simulation.uniform import Uniform
 
 import sys
 
-print(sys.path)
+
 
 ALLIES = json.load(open(get_absolute_path("/input/allies.json"), "r")).get("forces")
 ENEMIES = json.load(open(get_absolute_path("/input/enemies.json"), "r")).get("forces")
 
 from common.units import OBJECT_TO_INT_CLASS_MAPPER
-
 
 class SimulationSession:
     def __init__(
@@ -41,6 +40,7 @@ class SimulationSession:
         self.enemies = self.__init_units(self.__filter_units(enemies))
         self.step = 0
         self.logs = {
+
             "allies_starting_position": {
                 ally.name: ally._get_location() for ally in self.allies
             },
@@ -48,12 +48,15 @@ class SimulationSession:
                 enemy.name: enemy._get_location() for enemy in self.enemies
             },
             "buttle_phases": {},
+
         }
         self.reward = 0
         self.dead_allies = []
         self.dead_enemies = []
         self.__init_action_map()
+
         # class that returns next step for units
+
         self.simulation = simulation
 
     def reset(self):
@@ -62,6 +65,7 @@ class SimulationSession:
         self.enemies = self.__init_units(self.__filter_units(self.initial_enemies_dict))
         self.step = 0
         self.logs = {
+
             "allies_starting_position": {
                 ally.name: ally._get_location() for ally in self.allies
             },
@@ -69,6 +73,7 @@ class SimulationSession:
                 enemy.name: enemy._get_location() for enemy in self.enemies
             },
             "buttle_phases": {},
+
         }
         self.reward = 0
         self.dead_allies = []
@@ -116,28 +121,37 @@ class SimulationSession:
             )
         )
 
+
     def __init_action_map(self):
         for allies_unit in self.allies:
             self.map.update_action_map(allies_unit.latitude, allies_unit.longtitude, 1)
         for enemy_unit in self.enemies:
             self.map.update_action_map(enemy_unit.latitude, enemy_unit.longtitude, 2)
 
-    def __make_moves(self, allies, enemies, disable, can_move):
+    def __make_moves(self, allies, enemies, disable,can_move):
         logs = []
         allies.sort(key=lambda x: x.longtitude, reverse=True)
-        leader_move = None
+        leader_move=None
         for allies_unit in allies:
-            action = self.simulation.select_move(allies_unit, allies, enemies, self.map)
+            available_actions = allies_unit._get_available_actions(allies, enemies, self.map, can_move)
+            if(len(available_actions) == 0):
+                continue
+            
+            # select move
+            # TODO: waiting for feedback regarding unit moves unification
+            if leader_move in available_actions:
+                action = leader_move
+            else:
+                action = self.simulation.select_move(available_actions)
 
             if "move" in action[0]:
                 log = Move(allies_unit)
-                self.map.clear_unit(allies_unit.latitude, allies_unit.longtitude)
+                self.map.clear_unit(allies_unit.latitude,allies_unit.longtitude)
                 allies_unit.move(action[0])
-                if leader_move == None:
-                    leader_move = action
-                self.map.update_action_map(
-                    allies_unit.latitude, allies_unit.longtitude, 1
-                )
+                if leader_move==None:
+                    leader_move=action
+                self.map.update_action_map(allies_unit.latitude, allies_unit.longtitude, 1)
+
                 log.destination = allies_unit._get_location()
                 log.phase_number = self.step
             elif action[0] == "attack":
@@ -147,14 +161,12 @@ class SimulationSession:
                 )
                 log = Attack(allies_unit, selected_target, is_target_destroyed)
                 log.phase_number = self.step
-                if is_target_destroyed:
-                    self.map.clear_unit(
-                        selected_target.latitude, selected_target.longtitude
-                    )
+
+                    self.map.clear_unit(selected_target.latitude, selected_target.longtitude)
                     self.__getattribute__(f"dead_{disable}").append(selected_target)
-            elif action[0] == "follow_vehicle":
+            elif action[0] == 'follow_vehicle':
                 allies_unit._follow_wehicle(action[1])
-            elif action[0] == "leave_vehicle":
+            elif action[0] == 'leave_vehicle':
                 allies_unit._leave_vehicle()
             logs.append(log._to_dict())
             print
@@ -169,27 +181,25 @@ class SimulationSession:
     def _get_unit_strength(self, units_left) -> float:
         return sum([UNIT_FIGHTING_IMPACT[type(unit)] for unit in units_left])
 
+    
     def run_phase(self):
         """Units make their moves on this step"""
-        self.logs["buttle_phases"][self.step] = {}
+        self.logs['buttle_phases'][self.step] = {}
         alive_allies, alive_enemies = self._get_alive_units()
         # alies make their move
-        allies_logs = self.__make_moves(
-            alive_allies, alive_enemies, disable="enemies", can_move=True
-        )
-        self.logs["buttle_phases"][self.step]["allies"] = allies_logs
+        allies_logs = self.__make_moves(alive_allies, alive_enemies, disable='enemies', can_move=True)
+        self.logs['buttle_phases'][self.step]['allies'] = allies_logs
         alive_allies, alive_enemies = self._get_alive_units()
-        if all(isinstance(unit, Artillery) for unit in alive_allies):
+        if(all(isinstance(unit, Artillery) for unit in alive_allies)):
             return f"Retreat"
         if len(alive_enemies) == 0:
             return f"Victory"
-
+        
         alive_allies, alive_enemies = self._get_alive_units()
         # enemies make their move
-        enemies_logs = self.__make_moves(
-            alive_enemies, alive_allies, disable="allies", can_move=False
-        )
-        self.logs["buttle_phases"][self.step]["enemies"] = enemies_logs
+
+        enemies_logs = self.__make_moves(alive_enemies, alive_allies, disable='allies', can_move=False)
+        self.logs['buttle_phases'][self.step]['enemies'] = enemies_logs
         alive_allies, alive_enemies = self._get_alive_units()
         if len(alive_allies) == 0:
             return f"Defeat"

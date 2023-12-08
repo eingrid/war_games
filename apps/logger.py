@@ -26,7 +26,7 @@ class Move(Action):
         return {
             "unit": self.unit.name,
             "start": self.start,
-            "destination": self._destination,
+
         }
 
     destination = property(get_destination_location, set_destination_location)
@@ -46,3 +46,4 @@ class Attack(Action):
             "destroyed": self.destroyed,
             "target": self.target.name,
         }
+

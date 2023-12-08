@@ -25,8 +25,10 @@ class Visualization:
 
     def redraw(self, map: Map, allies, enemies):
         terrain = map.terrain
-        img = Cell.EMPTY.value["image"]  # pygame.image.load("textures/EMPTY_TEX.png")
+
+        img = Cell.EMPTY.value["image"] 
         self.screen.blit(img, (100, 100))
+
         for x in range(terrain.shape[0]):
             for y in range(terrain.shape[1]):
                 cell_type_value = terrain[x, y]
@@ -47,6 +49,7 @@ class Visualization:
                         (ally.longtitude * CELL_SIZE, ally.latitude * CELL_SIZE),
                     )
 
+
         for enemy in enemies:
             for troop in TroopImage:
                 if troop.value["name"] in enemy.name:
@@ -56,6 +59,7 @@ class Visualization:
                     )
 
         pygame.display.flip()
+
 
     def _dispay_outcome(self, outcome):
         txtsurf, rect = self.main_game_font.render(outcome)
@@ -150,5 +154,6 @@ class Visualization:
             f.close()
 
     def simulate_and_visualize_best(self, n):
+
         """Run/train simulation n times and visualize best"""
         return NotImplementedError()
