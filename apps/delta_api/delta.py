@@ -75,7 +75,7 @@ class DeltaRemote(DeltaAPI):
         return data
     
 def api():
-    return DeltaRemote()
+    return DeltaLocal()
 
 def allies():
     return api().fetch_json("allies").get("forces")
