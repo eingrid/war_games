@@ -1,6 +1,7 @@
 import json
 import random
 import os
+from delta_api import delta
 
 import numpy as np
 from utils import OUTCOMES, get_absolute_path
@@ -13,8 +14,8 @@ from common.units import OBJECT_TO_CLASS_MAPPER, UNIT_FIGHTING_IMPACT, Artillery
 from montecarlo_simulation.montecarlo import MonteCarlo
 from uniform_simulation.uniform import Uniform
 
-ALLIES = json.load(open(get_absolute_path("/input/allies.json"), "r")).get("forces")
-ENEMIES = json.load(open(get_absolute_path("/input/enemies.json"), "r")).get("forces")
+ALLIES = delta.allies()
+ENEMIES = delta.enemy()
 
 class SimulationSession:
     def __init__(

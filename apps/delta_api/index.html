@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Up/Down Web App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+
+        #count {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            font-size: 18px;
+            margin: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Count Up/Down Web App</h1>
+
+    <div id="count">Loading...</div>
+
+    <button onclick="changeCount(-1)">-</button>
+    <button onclick="changeCount(1)">+</button>
+
+    <script>
+        // Replace 'YOUR_API_ENDPOINT' with the actual endpoint of your web service
+        const apiEndpoint = 'YOUR_API_ENDPOINT';
+
+        // Function to fetch the current count from the web service
+        async function getCount() {
+            try {
+                const response = await fetch(apiEndpoint);
+                const data = await response.json();
+                document.getElementById('count').textContent = `Count: ${data.count}`;
+            } catch (error) {
+                console.error('Error fetching count:', error);
+            }
+        }
+
+        // Function to update the count on the web service
+        async function updateCount(change) {
+            try {
+                const response = await fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ change }),
+                });
+
+                // Update the displayed count after a successful update
+                getCount();
+            } catch (error) {
+                console.error('Error updating count:', error);
+            }
+        }
+
+        // Function to change the count based on the button clicked
+        function changeCount(change) {
+            updateCount(change);
+        }
+
+        // Initial fetch of the count when the page loads
+        getCount();
+    </script>
+</body>
+</html>

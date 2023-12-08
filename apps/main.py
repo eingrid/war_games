@@ -5,18 +5,17 @@ from common.map import Map
 from session import SimulationSession
 import json
 import numpy as np
+from delta_api import delta
 
-ALLIES = json.load(open(get_absolute_path("/input/allies.json"), "r")).get("forces")
-ENEMIES = json.load(open(get_absolute_path("/input/enemies.json"), "r")).get("forces")
 WIDTH_CELLS = 20
 HEIGHT_CELLS = 20 
 
-
 if __name__ == "__main__":
+
     ss = SimulationSession(
         Map(terrain=np.zeros(shape=(WIDTH_CELLS, HEIGHT_CELLS))), 
-        allies=ALLIES, 
-        enemies=ENEMIES, 
+        allies=delta.allies(), 
+        enemies=delta.enemy(), 
         simulation= MonteCarlo())
     visualization = Visualization(WIDTH_CELLS*18, HEIGHT_CELLS*18, session=ss )  # Set your desired window size
-    visualization.run_simulation(n=100)
+    visualization.run_simulation(5)
