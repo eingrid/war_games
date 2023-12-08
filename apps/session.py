@@ -1,5 +1,6 @@
 import json
 import random
+import os
 
 import numpy as np
 from utils import OUTCOMES, get_absolute_path
@@ -218,17 +219,23 @@ class SimulationSession:
         self._save_logs_to_json()
         print(self.step)
         return self.logs
+        
+    def _save_logs_to_json(self, outcome):
+        time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        teams = '_'.join([f"{class_name.lower()}-{amount}" for class_name, amount in Counter(obj.__class__.__name__ for obj in self.enemies).items()])
+        logs = {
+            'allies_starting_position': self.logs['allies_starting_position'],
+            'enemies_starting_position': self.logs['enemies_starting_position'],
+            'buttle_phases': self.logs['buttle_phases'],
+            'score': self.reward,
+            'outcome': outcome
+            }
+        file_path = get_absolute_path(f"/history_logs/{self.simulation.__class__.__name__}/{self.reward}__{time}__{teams}.json")
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, "w") as outfile:
+            json.dump(logs, outfile)
 
-    def _save_logs_to_json(self):
-        pass
-
-
-if __name__ == "__main__":
-    ss = SimulationSession(
-        Map(terrain=np.ones(shape=(50, 50))),
-        allies=ALLIES,
-        enemies=ENEMIES,
-        simulation=Uniform(),
-    )
+if __name__ == '__main__':
+    ss = SimulationSession(Map(frontline_longtitude=18, terrain=np.ones(shape=(20,20))), allies=ALLIES, enemies=ENEMIES, simulation= Uniform() )
     simulation_result = ss.run()
     print(simulation_result)
