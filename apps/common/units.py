@@ -36,9 +36,17 @@ class MilitaryUnit:
             (self.latitude - instance.latitude) ** 2
             + (self.longtitude - instance.longtitude) ** 2
         ) ** 0.5
+    
+    def __eq__(self, value: object) -> bool:
+        return self.name == value
 
     def _get_location(self):
         return self.longtitude, self.latitude
+    
+    def _set_location(self, location):
+        self.longtitude, self.latitude = location
+
+    location = property(_get_location, _set_location)
 
     def __get_euclidian_distance(self, unit):
         return (
@@ -296,6 +304,11 @@ class AirForce(MilitaryUnit):
     
     def _get_location(self):
         return self.longtitude, self.latitude, self.altitude
+    
+    def _set_location(self, location):
+        self.longtitude, self.latitude, self.altitude = location
+
+    location = property(_get_location, _set_location)
 
 
 class Bomber(AirForce):
@@ -380,6 +393,7 @@ UNIT_FIGHTING_IMPACT={
     MLRS: 0.6,
     Stormtrooper: 0.5,
     Tank: 0.8,
+    ArmoredPersonnelCarriers: 0.6
 }
 
 DESTROYING_PROBABILITY = {
