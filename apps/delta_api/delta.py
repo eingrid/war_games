@@ -1,9 +1,20 @@
 import json
 import random
+import requests
+from abc import ABC, abstractmethod
+import utils
 
+DELTA_SERVER_URL = "http://localhost:5000/api/"
 
-class DeltaAPI:
-    def __init__(self) -> None:
+class DeltaAPI(ABC):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(DeltaAPI, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+
+    def __init__(self):
         pass
 
     def detect(self, units):
@@ -41,35 +52,34 @@ class DeltaAPI:
             
         return delta_response
 
+    @abstractmethod
+    def fetch_json(self, name):
+        pass
+    
+class DeltaLocal(DeltaAPI):
+    def __init__(self):
+        pass
 
-#        {
-#     "forces":[
-#         {
-#             "location": {
-#                 "longtitude": 12,
-#                 "latitude": 18
-#             },
-#             "object_name": "tank",
-#             "object_confidence": 0.8
-#         },
-#         {
-#             "location": {
-#                 "longtitude": 5,
-#                 "latitude": 12
-#             },
-#             "located_by": "drone1697i2bg335",
-#             "object_name": "machinegunner",
-#             "object_confidence": 0.9
-#         },
-#         {
-#             "timestamp": 0,
-#             "location": {
-#                 "longtitude": 2,
-#                 "latitude": 8
-#             },
-#             "located_by": "drone1697i2bg335",
-#             "object_name": "stormtrooper",
-#             "object_confidence": 0.8
-#         }
-#     ]
-# }
+    def fetch_json(self, name):        
+        data = json.load(open(utils.get_absolute_path(f"/input/{name}_q2.json"), "r"))
+        return data 
+
+class DeltaRemote(DeltaAPI):
+    def __init__(self):
+        pass
+
+    def fetch_json(self, name):
+        url = DELTA_SERVER_URL + name
+        response = requests.get(url)
+        data = response.json().get("data")
+        return data
+    
+def api():
+    return DeltaRemote()
+
+def allies():
+    return api().fetch_json("allies").get("forces")
+
+def enemy():
+    return api().fetch_json("enemy").get("forces")
+

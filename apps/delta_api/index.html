@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Up/Down Web App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+
+        #count {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            font-size: 18px;
+            margin: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Delta API</h1>
+
+    <div class="counter">
+        <h2>Infantry</h2>
+        <div id="infantryCount">Loading...</div>
+        <button onclick="changeCount(1, 'infantryCount')">-</button>
+        <button onclick="changeCount(1, 'infantryCount')">+</button>
+    </div>
+
+    <div class="counter">
+        <h2>Tanks</h2>
+        <div id="tanksCount">Loading...</div>
+        <button onclick="changeCount(-1, 'tanksCount')">-</button>
+        <button onclick="changeCount(1, 'tanksCount')">+</button>
+    </div>
+
+    <div class="counter">
+        <h2>Machinegunner</h2>
+        <div id="machinegunnerCount">Loading...</div>
+        <button onclick="changeCount(-1, 'machinegunnerCount')">-</button>
+        <button onclick="changeCount(1, 'machinegunnerCount')">+</button>
+    </div>
+
+    <script>
+        // Replace 'YOUR_API_ENDPOINT' with the actual endpoint of your web service
+        const apiEndpoint = 'http://localhost:5000/api/enemy';
+
+        // Function to fetch the current count from the web service
+        async function getCount(counterId) {
+            try {
+                const response = await fetch(`${apiEndpoint}/${counterId}`);
+                const data = await response.json();
+                document.getElementById(counterId).textContent = `Count: ${data.data}`;
+            } catch (error) {
+                console.error(`Error fetching count ${counterId}:`, error);
+            }
+        }
+
+        // Function to update the count on the web service
+        async function updateCount(change, counterId) {
+            try {
+                const currentCountResponse = await fetch(`${apiEndpoint}/${counterId}`);
+                const currentCountData = await currentCountResponse.json();
+                const currentCount = currentCountData.data;
+
+                const updatedCount = currentCount + change;
+
+                const response = await fetch(`${apiEndpoint}/${counterId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 'count' :updatedCount }),
+                });
+
+                // Update the displayed count after a successful update
+                getCount(counterId);
+            } catch (error) {
+                console.error(`Error updating count ${counterId}:`, error);
+            }
+        }
+
+        // Function to change the count based on the button clicked
+        function changeCount(change, counterId) {
+            updateCount(change, counterId);
+        }
+
+        // Initial fetch of the count when the page loads
+        getCount('tanksCount');
+        getCount('infantryCount');
+        getCount('machinegunnerCount');
+    </script>
+</body>
+</html>
