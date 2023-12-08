@@ -90,7 +90,7 @@ class Visualization:
         if(isinstance(self.ss.simulation, MonteCarlo)):
             results="remaining_strength,steps,outcome"
             print('started')
-            for i in range(1,n):
+            for i in range(1,n+1):
                 print(f'{i}...')
                 outcome = True
                 self.ss.reset()
