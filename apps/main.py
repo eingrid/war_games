@@ -10,11 +10,12 @@ ALLIES = json.load(open(get_absolute_path("/input/allies.json"), "r")).get("forc
 ENEMIES = json.load(open(get_absolute_path("/input/enemies.json"), "r")).get("forces")
 WIDTH_CELLS = 20
 HEIGHT_CELLS = 20 
+MAP = Map(terrain=np.zeros(shape=(WIDTH_CELLS, HEIGHT_CELLS)))
 
 
 if __name__ == "__main__":
     ss = SimulationSession(
-        Map(terrain=np.zeros(shape=(WIDTH_CELLS, HEIGHT_CELLS))), 
+        MAP, 
         allies=ALLIES, 
         enemies=ENEMIES, 
         simulation= MonteCarlo())
