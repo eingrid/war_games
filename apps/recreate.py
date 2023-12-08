@@ -104,8 +104,7 @@ def open_file(path):
 
 if __name__ == '__main__':
     args = get_args()
-    # file_name = args.log_file_name
-    file_name = '0__2023-12-07_18-26-13__tank-1_artillery-2_mlrs-1.json'
+    file_name = args.log_file_name
     dict_logs = open_file(path=f"{ROOT_DIR}/history_logs/{file_name}")
     rs = RecreationSession(MAP, 
                            allies=dict_logs['allies_starting_position'],
