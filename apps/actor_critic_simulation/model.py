@@ -5,11 +5,21 @@ from tensorflow.keras.optimizers.legacy import Adam
 import numpy as np
 import tensorflow as tf
 from tensorflow.python.framework.ops import disable_eager_execution
+
 disable_eager_execution()
 
+
 class Agent(object):
-    def __init__(self, alpha, beta, gamma=0.99, n_actions=4,
-                 layer1_size=256, layer2_size=128, input_dims=5):
+    def __init__(
+        self,
+        alpha,
+        beta,
+        gamma=0.99,
+        n_actions=4,
+        layer1_size=256,
+        layer2_size=128,
+        input_dims=5,
+    ):
         self.gamma = gamma
         self.alpha = alpha
         self.beta = beta
@@ -26,17 +36,17 @@ class Agent(object):
     def build_actor_critic_network(self):
         inputs = Input(shape=(self.input_dims,))
         delta = Input(shape=[1])
-        dense1 = Dense(self.fc1_dims, activation='relu')(inputs)
-        dense2 = Dense(self.fc2_dims, activation='relu')(dense1)
-        probs = Dense(self.n_actions, activation='softmax')(dense2)
-        values = Dense(1, activation='linear')(dense2)
+        dense1 = Dense(self.fc1_dims, activation="relu")(inputs)
+        dense2 = Dense(self.fc2_dims, activation="relu")(dense1)
+        probs = Dense(self.n_actions, activation="softmax")(dense2)
+        values = Dense(1, activation="linear")(dense2)
 
         def custom_loss(y_true, y_pred):
-            print('calc loss')
-            out = K.clip(y_pred, 1e-8, 1-1e-8)
-            log_lik = y_true*K.log(out)
-            loss = K.sum(-log_lik*delta)
-            print('calc loss finish')
+            print("calc loss")
+            out = K.clip(y_pred, 1e-8, 1 - 1e-8)
+            log_lik = y_true * K.log(out)
+            loss = K.sum(-log_lik * delta)
+            print("calc loss finish")
 
             return loss
 
@@ -46,7 +56,7 @@ class Agent(object):
 
         critic = Model(inputs=[inputs], outputs=[values])
 
-        critic.compile(optimizer=Adam(lr=self.beta), loss='mean_squared_error')
+        critic.compile(optimizer=Adam(lr=self.beta), loss="mean_squared_error")
 
         policy = Model(inputs=[inputs], outputs=[probs])
 
@@ -63,13 +73,13 @@ class Agent(object):
         return action
 
     def learn(self, state, action, reward, state_, done):
-        state = state[np.newaxis,:]
-        state_ = state_[np.newaxis,:]
+        state = state[np.newaxis, :]
+        state_ = state_[np.newaxis, :]
         critic_value_ = self.critic.predict(state_)
         critic_value = self.critic.predict(state)
 
-        target = reward + self.gamma*critic_value_*(1-int(done))
-        delta =  target - critic_value
+        target = reward + self.gamma * critic_value_ * (1 - int(done))
+        delta = target - critic_value
 
         actions = np.zeros([1, self.n_actions])
         actions[np.arange(1), action] = 1
