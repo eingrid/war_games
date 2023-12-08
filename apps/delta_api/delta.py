@@ -58,7 +58,7 @@ class DeltaAPI:
 #                 "latitude": 12
 #             },
 #             "located_by": "drone1697i2bg335",
-#             "object_name": "mlrs",
+#             "object_name": "machinegunner",
 #             "object_confidence": 0.9
 #         },
 #         {
