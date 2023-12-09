@@ -1,5 +1,6 @@
 {
     "forces":[
+
         {
             "timestamp": 0,
             "location": {
@@ -15,16 +16,6 @@
             "location": {
                 "longtitude": 18,
                 "latitude": 9
-            },
-            "located_by": "drone1697i2bg335",
-            "object_name": "stormtrooper",
-            "object_confidence": 0.8
-        },
-        {
-            "timestamp": 0,
-            "location": {
-                "longtitude": 18,
-                "latitude": 8
             },
             "located_by": "drone1697i2bg335",
             "object_name": "stormtrooper",

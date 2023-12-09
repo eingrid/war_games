@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class Simulation(ABC):
     @abstractmethod
     def select_move(self, available_actions):

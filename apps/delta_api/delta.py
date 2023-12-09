@@ -49,7 +49,7 @@ class DeltaAPI(ABC):
                     "object_confidence": 0.8,
                 }
             )
-            
+
         return delta_response
 
     @abstractmethod
