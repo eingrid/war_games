@@ -5,9 +5,9 @@ from utils import OUTCOMES, get_absolute_path
 from session import SimulationSession
 from common.map import Map
 from enums import Cell, TroopImage
-import vidmaker
-FPS = 60
-video = vidmaker.Video("vidmaker.mp4", late_export=True)
+# import vidmaker
+# FPS = 60
+# video = vidmaker.Video("vidmaker.mp4", late_export=True)
 
 CELL_SIZE = 18
 SHIFT_MARGIN = 5
@@ -62,7 +62,7 @@ class Visualization:
 
         pygame.display.flip()
 
-        video.update(pygame.surfarray.pixels3d(self.screen).swapaxes(0, 1), inverted=False)
+        # video.update(pygame.surfarray.pixels3d(self.screen).swapaxes(0, 1), inverted=False)
 
     def _dispay_outcome(self, outcome):
         txtsurf, rect = self.main_game_font.render(outcome)
@@ -135,16 +135,16 @@ class Visualization:
                 # Add a delay of 1 for visualization
                 # pygame.time.wait(1000)
                 pygame.time.wait(300)
-            video.export(verbose=True)
+            # video.export(verbose=True)
             print(outcome)
         pygame.quit()
 
-    def run_simulation(self, n):
-        if isinstance(self.ss.simulation, MonteCarlo):
-            results = "remaining_strength,steps,outcome"
-            print("started")
-            for i in range(1, n):
-                print(f"{i}...")
+    def run_simulation(self,n, mode):
+        if(isinstance(self.ss.simulation, MonteCarlo)):
+            results="remaining_strength,steps,outcome"
+            print('started')
+            for i in range(1,n+1):
+                print(f'{i}...')
                 outcome = True
                 self.ss.reset()
                 while outcome not in OUTCOMES:
@@ -153,10 +153,11 @@ class Visualization:
                     alive_allies, _ = self.ss._get_alive_units()
 
                 alies_strength = self.ss._get_unit_strength(alive_allies)
-                results += f"\n{alies_strength:.1f},{self.ss.step},{outcome}"
+                self.ss.reward = alies_strength
+                results += f'\n{alies_strength:.1f},{self.ss.step},{outcome}'
                 self.ss._save_logs_to_json(outcome=outcome)
             # write results to csv
-            f = open(get_absolute_path(f"/montecarlo_simulation/result.csv"), "w")
+            f = open(get_absolute_path(f"/montecarlo_simulation/result_{mode}.csv"), "w")
             f.write(results)
             f.close()
 
