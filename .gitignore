@@ -124,7 +124,7 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
-*.ipynb
+
 **/**.h5
 **/**.png
 
